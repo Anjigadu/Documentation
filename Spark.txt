@@ -1,0 +1,423 @@
+		Spark :- it's cluster computing system 
+		-----
+Spark is faster than hive. ex If RDMS required 10 hrs to execute sql Hive will take 2 hrs and Spark will take 50 min.
+
+Spark Features :- 
+	Provides many high level tools
+		shark 
+		spark sql 
+		for m/c learning 
+	Spark provide Abstrack API for java , scala , python. 	
+	Advanced Analytics − Spark not only supports ‘Map’ and ‘reduce’. It also supports SQL queries, Streaming data, Machine learning (ML), and Graph algorithms.
+	Tranformation is lexy.  
+
+
+
+
+Statically type language :- We did not  assigned same name to different type of variable  like if String a then can't create int a   
+Dynamic type language:- 
+
+
+
+Why HDFS faster ?:-
+	Parallel processing 
+	Makes HDFS faster -> data locality (programs sends to data not data is taken in programs) 		
+		
+		
+Resilient Distributed Dataset (RDD) :- 1TB data is loaded in memory but it is in distributed format. As computing is done in memory make more fast. 
+
+	Open Spark Shell:- 		
+			$ spark-shell
+
+	Create simple RDD
+	Let us create a simple RDD from the text file. Use the following command to create a simple RDD.
+			scala> val inputfile = sc.textFile(“input.txt”)
+	The output for the above command is
+		inputfile: org.apache.spark.rdd.RDD[String] = input.txt MappedRDD[1] at textFile at <console>:12
+The Spark RDD API introduces few Transformations and few Actions to manipulate RDD.
+
+
+
+Spark contains two different types of shared variables − one is broadcast variables and second is accumulators.
+		Broadcast variables − used to efficiently, distribute large values.
+		Accumulators − used to aggregate the information of particular collection.
+https://vimeo.com/115830379
+
+Introduction :- 
+------------
+	Storage part is same in hadoop and Spark only differenet in computation.
+	Spark Context helps us in creating RDD. 
+	RDD is having certain properties
+		cachable 
+		laziness (action will perform only when we want to  )
+		immutable (once created RDD is never been distroied )
+ 
+Architecture of Sprak :-
+----------------------
+	 	 Spark Context:- Every driver program which have Context is act as driver and other 
+	 and other nodes and working node for that driver. It communicate with Mapreduce , yarn ,etc but it work as Driver-worker relationship.
+	 
+		Filter put and RDD :- 
+Object SimpleApp{
+	Def main(args: Array [String]) {
+		Val logfile =”c:\\Readme.md”  // Should be some file on ur system 
+		Val conf = new SparkConf().setAppName(“Simple Appl”)	
+			Val sc= new SparkContext( conf)
+			Val logData = sc.textfile (logfile, 2).cache() //1st RDD is created 
+			Val numAs = logData.filter(line => line.contains(“Hadoop”)).count()       // filterout number of line having Hadoop and spark keyword in line. This particular function is performed by worked nodes
+			Val numbs = logData.filrer(line =>line.contains(“spark”)).count()
+			Println(“Lines with Hadoop: %s, Line with Spark:%s”.format(numAs, numBs)
+			}
+}
+
+		-----------------
+		| Spark Programe  |
+		------------------
+				| 1. run Job
+				|	
+		------------------
+		| spark Context	  |
+		-------------------
+				| 2. run job
+				|
+		-------------------
+		| DAGScheduler	   |
+		--------------------
+				|  3. Submit Stage
+				|
+		--------------------
+		| TaskScheduler		|
+		---------------------
+				|  4. Launch task 
+				|
+		---------------------					   ------------------ 6. LaunchTask----------  7. runtask   ----------------------
+		| Scheduler Backend |   ----------------> | ExecutorBackend |  ---------> | Executo  | -------->   | ShuffleMapTask  OR   |
+		---------------------   5. Launch Task     ------------------			   ----------			   |  ResultTask          |
+																										   |----------------------
+		
+*******************Spark Streaming************************
+https://apps.twitter.com/ Twitter apps > create new app 
+Create an Application form fill all fields and 
+Create access token and secrete 
+Twitter Popular tags :-
+	Object TwitterPopulertags{
+		Def main (args : Array [String]){
+	// verify 4 arguments are present if not the system is exit 
+			If (args.length < 4){
+				System.err.println (“Usage: TwitterPopulterTags <consumer key> <Consumer secret>” + “<access token > <access token secrete > [<filters>]”)
+			System.exit(1)
+		}
+	// Setting up in warn state loak at the anther object class
+		StreamingExamples.setStreamingLogLevels ()
+	
+	// Store all the arguments ie consumerKey, consumerSecrete, accessToken, accessTokenSecret in arrary  
+		Val Array(consumerKey, consumerSecrete, accessToken, accessTokenSecret)= args.take(4)
+	// filers is keyword ie args.lenght(4)-4 = 0  ie narendra mode
+		Val filters = args.takeRight(args.lenght - 4 ) 
+	
+	// set system properties so that twitter4j library used by twitter stream 
+	// can use them to generat OAuth credentials 
+		System.setProperty (“twitter4j.oauth.consumerKey ”, consumerKey)
+		System.setProperty (“twitter4j.oauth.consumerSecret ”, consumerSecret)
+		System.setProperty (“twitter4j.oauth.accessToken ”, accessToken)
+		System.setProperty (“twitter4j.oauth.accessTokenSecrt ”,accessTokenSecret)
+		
+//Spark confirguration pass application name ie.“TwitterPopulerTags” and local - > mention that runing on local and 2 stand for 2 processer
+	Val sparkConf = new SparkSconf().setAppName(“TwitterPopulerTags”).setMaster(local[2])
+
+//creating streaming Context and passing sparkConf and time duration to recevied DStream . This DStream is created in RDD  	
+	Val ssc = new StreamingContext(sparkConf, Seconds(2))
+	
+// passing StreamingContext in TwitterUtils which create filters  	
+	Val Stream = TwitterUtils.createStream(ssc, None, filters) // DStream
+
+// need to filter out text and # tag from DStream	
+	Val hashTags = stream.flagMap(status => status.getText.split(“ ”).filter( .startWith(“#”)))
+	Val topCounts60 = hashTags.map(( , 1)).reduceByKeyAndWindow(_+_, Seconds(60)).map(case (topic, count) => (count, topic)).transform(_.sortByKey(false))
+	Val topCounts10 = hashTags.map(( , 1)).reduceByKeyAndWindow(_+_,Seconds(10)).map(case(topic,count)=>(count,topic)).transform(_.sortByKey(false))
+
+
+	//print popular hashtags
+	topCounts60.foreachRDD(rdd =>{val topList = rdd.take(10)
+
+	
+	
+
+	// Utility functions for Spark Streaming examples
+	object StreamingExample extends Logging {
+		// Set reasonable logging levels for Streaming if the user has not configured log4j
+		Def setStreamingLogLevels() {
+			Val log4jInitialized = Logger.getRootLogger.getAllAppenders.hasMoreElemens 
+			If (!log4jInitialzed) {
+				// we first log something to initialized Spark default login , the we over ride the logging level
+				LogInfo(“”Setting log level to for Streaming example+  “To override add a custom log4j.propertyes to classpath ”)
+				Logger.getRootLogger.setLevel(Level.WARN)
+			}
+		}
+	}
+		
+***************Apache Spark - Loading data from relational databases*******************
+		
+		
+
+		
+**************************Programing *********************
+https://www.youtube.com/watch?v=fXPQdu1OICI
+
+
+dependancy needt to add :-
+org.apache.spark.sql
+com.databrickes.Sprak-SCV 
+
+
+
+Programe :-
+//Creat  sparkobject
+object SimpleSparkSQlExample {
+ 
+//create main method 
+def main(args: Array[String]){
+
+// create spark conf
+	val Conf = new SparkConf().setAppName("SimpleSparkSQL Application ").setMaster("local[2]").set("spark.executor.memory","2g")
+
+//Create spark context
+val sc = new SparkContext(conf)
+
+//create SQL context
+val sqlc = new org.apache.spark.sql.sqlContext(sc);
+
+// create RDD
+val p = sc.textfile("src/text.text.txt")
+
+//create RDD to slipe data with comm ,
+val pmap=p.map(p=> p.splite(","))
+
+// creating anthor RDD 
+
+val PersonRdd= pmap.map(p=>Person(p(0),p(1),p(2).toInt))
+
+// Whereas Persion is a class and syntex -> cases class Person(first_name:String,last_name:String,age:Int)
+
+
+// import sql implicits method which help convert sprak RDD to dataFrame (RDD + schema)
+import sqlc.implicits._
+
+val PersonDF = PersonRdd.toDF
+
+// once dataframe is created Temptable as "person" and it will be in memory.
+PersonDF.registerTempTable("Person")
+
+// Now execute sql query in person table and displayed a output
+print(sqlc.sql(select * from Person").collect().tolist)
+
+	}
+}
+
+
+***********************
+Loading data from csv and json file 
+-------------------------------------
+
+//Creat  sparkobject
+object SparlSqlCsvJsonExample {
+ 
+//create main method 
+def main(args: Array[String]){
+
+// create spark conf
+	val Conf = new SparkConf().setAppName("SimpleSparkSQL Application ").setMaster("local[2]").set("spark.executor.memory","2g")
+
+//Create spark context
+val sc = new SparkContext(conf)
+
+
+//create SQL context
+val sqlc = new org.apache.spark.sql.sqlContext(sc);
+
+// Since input data file is json format . define teh same. As it retrun a dataframe out then collect in dataframe 
+
+val PersonDF = sqlc.jsonfile("src/test/Person.json")
+PersonDF.printSchema()  /// print a schema of dataframe
+
+PersonDF.registerTempTable("Person")/// registor as table
+sqlc.sql("select * from Person").collect().foreach(print)
+
+************************
+Since schema ie column name is present on data file like 
+
+schemaname date 	heighestvalue losestvalue
+11	16-01-2016 	300		200
+
+we define header->true
+
+
+val NyseDF = sqlc.load ("com.databricks.spark.csv", Map("path"-> args(0),"header"->"true"))
+// register in 
+NyseDF.registerTemTable("NYSE")
+
+//to siple print what data it have 
+NyseDF.printSchema();
+
+
+// Now want to print symbole from datafile 
+print(sqlc.sql("select distinct(symbole) from NYSE").collect().toList()
+
+
+
+}
+}
+
+Note :- passing the data file path as arguments (Run Configuration of eclipes)
+
+
+
+		
+		
+
+
+		====================================================================================
+	
+To start a start server --> spark-shell
+http://localhost:4040
+
+Java 8, scala 2.11.7, maven , 
+
+First program on scala :-
+val data = 1 to 100
+// created fection of data from range from 1 to 100
+
+//Creating RDD and other RDD's on top of RDD
+val distdata = sc.parallelize(data)
+
+// filter out data 
+distdata.filter(_<10).collect()
+
+// collecting result in on a variable "result" 
+
+val result = distdata.filter(_<10).collect()
+
+*******************
+
+Spark Bigdata on Horton  
+-------------------------
+
+Pre-requsite --> gothrough Horton adminstrator videos and need to confirguration 
+***********************
+
+
+Sparkcontext - will to creating RDD
+RDD -whihc has certain property like leazy nness , immutable 
+
+********************************
+
+data loading 
+-------------
+
+Pre-requite :- HDFS distribution, SQl on VM
+
+program to connect to database-
+
+	object jdbcRddExample {
+		def main (args: Array [String]) {
+			val url="jdbc:mysql://hdpserver.itversity.com/demo"
+			val userName="demo_user"
+			val password= "itversity"
+			Class.forName("com.mysql.jdbc.Driver").newInstance
+
+			val conf = new sparkConf().setAppName("jdbc RDD").setMaster("local[2]").set("spark.executor.memory",""
+			val sc = new SparkContext(conf)
+
+			val myRDD = new jdbcRDD (sc, ()=> DriverManager.getConnection(url, username, passowrd), "select * from emp limit ?,?", 3,5,1,r => r.getString("lastName")+ ","+ r.getString("first_name"))
+			
+
+			myRDD.foreach(println)
+			myRDD.saveAsTextfile("c:\\exampl")
+
+
+************************
+difference bewteen spark and mapreduce 
+-------------------------------------
+ 		Mapreducer							Spark 
+1. mapper output is store in local then it pass to reducer 	Mapper meet to reducer and data is store in buffer 
+2. 								Mapper ouput is not combile
+								number of processer is equal to number of file process
+
+
+ex. :- 
+
+object setMapReduce {
+	def main(args:arrays[String]){
+	val conf= new SparkConf().setAppName("MapReduce Application").setMaster("local(2)").set("spark.executer.memory","1g")
+//local m/c and 2 ports , setting memory as 1gb.
+val sc= new SparkContext(conf)  //initizing spark context
+val mysetData = sc.textFile (args(0))
+val mysetRDD = mysetData.map(row=>{ 
+	val columns=row.split(",")  // Splitting a data with ,
+	(columns(0),columns(3)) // taking 1st and 3rd column
+	}).reduceByKey((x,y)=> if(x>y) x else y).collect().foreach(print)
+}
+}
+
+====>>>>> find function reduceByKey , foreach, 
+****************************************
+Set development environment 
+---------------------------
+
+Install java , scala -2.11,sbt 
+set environment - Java , scala , sbt,Hadoop_home, 
+hadoop_home/bin/winUtils.exe  
+
+get the link -> https://codeload.github.com/srccodes/hadoop-commons.2.2.0-bin/zip/master
+
+ex.:- 
+ object simpel {
+	def main(args:Array[String]){
+	val file= "C:\\data.txt" 
+	val spark = new SparkConf().setAppName("Simple App").setMaster("local[2]").ste("spark.executor.memory","1gb")
+val sc= new SparkContxt(conf)    // creating RDD
+val logData =sc.textFile(logFile, 2).cache()   // it's log file hence logFile, 2- for 2 colum. And cach the RDD
+val MapHadoop = logData.filter(line => line.contains("hadoop").count()  // take a count number of time hadoop present in file 
+val MapSpark = logData.filter(line => line.contains("spark").count()  // take a count for number of times Spark present in file 
+	println("line with a: $s.Line with b", format(MapHadoop, MapSpark))
+	
+	}
+}
+
+*********************************
+Streaming with kalf
+--------------------
+	install - sgvin , java , scala , sbt, Apache Kafka 2.11.(unzip)/bin/windows(for window),
+open segvin terminal 
+	cd Kafka/bin 
+ 	ls
+	kafka-run-class.sh
+
+******************
+Streaming using Twitter 
+---------------------
+	Kafka
+	flume 	----> Spark Streaming 		--->	 HDFS 
+	hdfs	---->(create batch of i/p data)	         Database
+	ZeroMQ						
+	(i/p data )
+* depending upon the input stream need to include dependance in pom.xml or sbt
+
+
+
+
+ 
+
+ 
+
+
+
+				
+
+
+			
+			 
+ 
+
+
+	

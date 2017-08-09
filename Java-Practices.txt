@@ -1,0 +1,2576 @@
+
+
+Web- Serveice :- 
+---------------
+GET should be used to retrieve a resource. This operation should be idempotent, meaning it should not change any state on the server.
+
+POST should be used to add new information to the server. This is usually performed on a URL that represents a "container" of resources. The POST will add a new resource to this container.
+
+PUT should be used to update an existing resource.
+
+DELETE should be obvious.
+
+---
+###  should not put sensitive information in a query string (GET parameter) as Web servers typically log the HTTP request  -->you put that in the HTTP Authorization header
+
+
+--------------------
+What are classes, references and objects?
+-->
+*	A class is like the blueprint for a house. Using this blueprint, you can build as many houses as you like.
+*	Each house you build (or instantiate, in OO lingo) is an object, also known as an instance.
+*	Each house also has an address, of course. If you want to tell someone where the house is, you give them a card with the 	  address written on it. That card is the object's reference.
+*	If you want to visit the house, you look at the address written on the card. This is called dereferencing.
+
+						Foo myFoo = new Foo();     // 1
+						callBar(myFoo);            // 2
+						myFoo.doSomething()        // 4
+
+						void callBar(Foo foo) {
+							foo = new Foo();       // 3
+						}
+
+						
+1. Several things are happening in line 1. new Foo() tells the JVM to build a new house using the Foo blueprint. The JVM does so, and returns a reference to the house. You then copy this reference to "myFoo"
+
+2. In line 2, Here, we have a reference Foo foo. Java is pass-by-value, so the foo in callBar is a copy of the myFoo reference. Think of it like giving callBar its very own card with the house's address on it. What does callBar do with this card? It asks for a new house to be built, and then uses the card you gave it to write that new house's address. Note that callBar now can't get to the first house (the one we built in line 1), but that house is unchanged by the fact that a card that used to have its address on it, now has some other house's address on it.
+
+The whole sequence would be something like:
+
+1.	Ask JVM to build a house. It does, and gives us the address. We copy this address to a card named myFoo.
+2. 	We invoke callBar. Before we do, we copy the address written on myfoo to a new card, which we give to callBar. It calls that card foo.
+3.	callBar asks the JVM for another house. It creates it, and returns the new house's address. callBar copies this address to the card we gave it.
+4.	Back in the first method, we look at our original, unchanged card; go to the house whose address is on our card; and do something there.
+----------------------------
+						
+### Java Collections not directly store Primitives types?
+
+-------------------------------------------------
+Mutiple catch is allowed then why below program throw compilance error ? (Unreachable catch block for ArithmeticException. It is already handled by the catch block for Exception)
+	try {
+			int a = 10/0;
+			System.out.println(a);
+		} 
+		catch (Exception e) {}
+		catch (ArithmeticException ar){}
+		catch (IOException ex) {}
+	}
+	
+-- Compilation fails because ArithmeticException has already been caught. ArithmeticException is a subclass of java.lang.Exception. 
+The first catch block catches all exceptions, so the others can never be reached.
+
+If ArithmeticException appears before Exception, then the file will compile.
+
+-------------------------------------------------------
+How to create mutiple thread class ?
+		Creating thread by extending Thread class
+		1. Let your class extend “Thread ” class
+
+		2. Now override the “public void run()” method and write your logic there (This is the method which will be executed when this thread is started)
+
+		That’s it, now you can start this thread as given below
+
+		1. Create an object of the above class
+
+		2. Call the method “start” on the object created. Now our thread will start its execution in parallel.
+
+Ex:-		
+				public class FirstThread extends Thread
+						{
+						  //This method will be executed when this thread is executed
+						  public void run()
+						  {
+						 
+						    //Looping from 1 to 10 to display numbers from 1 to 10
+						     for (int i=1; i<=10; i++)
+						     {
+							 }
+						}
+
+		Calling class to initialized thread :-
+					public class ThreadDemo
+					{
+					  public static void main(String args[])
+					  {
+						//Creating an object of the first thread
+						FirstThread   firstThread = new FirstThread();
+						//Starting the first thread
+						firstThread.start();
+						}
+						
+						
+						
+	 
+//Find the print 1 to 10 number without using loop
+
+public static void main(String[]args ){
+	
+		numberprint(1);
+}
+
+public void numberprint(int number){
+		if (i< =10){
+		number =number +1;
+		System.out.printin (number);
+		}
+}
+
+**************************
+To read .YML file using java :-
+----------------------------
+YAML is very handy for writing system configuration files
+We need certain dependancies :-
+			<dependencies>
+				<dependency>
+					<groupId>com.fasterxml.jackson.dataformat</groupId>
+					<artifactId>jackson-dataformat-yaml</artifactId>
+					<version>2.3.0</version>
+				</dependency>
+				<dependency>
+					<groupId>com.fasterxml.jackson.core</groupId>
+					<artifactId>jackson-databind</artifactId>
+					<version>2.2.3</version>
+				</dependency>
+				<dependency>
+					<groupId>org.apache.commons</groupId>
+					<artifactId>commons-lang3</artifactId>
+					<version>3.4</version>
+				</dependency>
+			</dependencies>
+
+Create file to hold data from .YAML file 
+			public class User {
+				private String name;
+				private int age;
+				private Map<String, String> address;
+				private String[] roles;
+				public String getName() {
+					return name;
+				}
+				public void setName(String name) {
+					this.name = name;
+				}
+				public int getAge() {
+					return age;
+				}
+				public void setAge(int age) {
+					this.age = age;
+		
+	REading .YML file 
+
+				    public static void main(String[] args) {
+							ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
+							try {
+								User user = mapper.readValue(new File("user.yaml"), User.class);
+								System.out.println(ReflectionToStringBuilder.toString(user,ToStringStyle.MULTI_LINE_STYLE));
+							} catch (Exception e) {
+							
+----------------------------------------------------------------------
+// Write swap program without using temp veriable 
+public void static main(String[] args){
+	int a= 10, b=20;
+	
+	a= a+b; // a= 10+20=30
+	b= a-b;// b= 30-20=10
+	a= a-b;// a= 30-10=20	
+	
+}
+
+---------------
+code will print a pyramid of dollars.:- 
+
+	    for(int i=0;i<5;i++) {
+	         for(int j=0;j<5-i;j++) {
+	             System.out.print(" ");
+	         }
+	        for(int k=0;k<=i;k++) {
+	            System.out.print("$ ");
+	        }
+	        System.out.println();  
+	    }
+
+	
+	 $ 
+    $ $ 
+   $ $ $ 
+  $ $ $ $ 
+ $ $ $ $ $ 
+ 
+ --------------------------------------------------------------
+ Invalid Mathematics expression :- 	 int a = 10/0;
+ 
+ -------------------------------------------------------------
+ Used to other class apart from String/Character/etc in hashmap like student 
+			public class Student {
+
+private String name;
+private String major;
+private int number;
+
+public Student(String name, String major, int number) {
+    super();
+    this.name = name;
+    this.major = major;
+    this.number = number;
+}
+
+public static void main(String[] args) {
+    List<String> names = Arrays.asList("Joe", "Jack", "John","James");
+    List<String> majors = Arrays.asList("English","Math","Geography");
+    Map<String,Student> students = new HashMap<String,Student>();
+    for(int i = 0; i < 100; i++){
+        Collections.shuffle(names);
+        Collections.shuffle(majors);
+        students.put(names.get(0) + String.valueOf(i), new Student(names.get(0), majors.get(0), i));
+}
+
+    List<Student> mathMajors = getStudents(students, "Math");
+    for(Student student:mathMajors){
+        System.out.println(student.name);
+        System.out.println(student.major);
+    }
+}
+
+public static List<Student> getStudents(Map<String,Student> students, String searchToken){
+    List<Student> results = new ArrayList<Student>();
+    for(Entry<String,Student> entry:students.entrySet()){
+        if(entry.getValue().getMajor().equalsIgnoreCase(searchToken)){
+        results.add(entry.getValue());
+    }
+}
+return results;
+}
+
+	public String getName() {
+	return this.name;
+	}
+
+	public void setName(String name) {
+	this.name = name;
+	}
+
+	public String getMajor() {
+	return this.major;
+	}
+
+	public void setMajor(String major) {
+	this.major = major;
+	}
+
+	public int getNumber() {
+	return this.number;
+	}
+
+	public void setNumber(int number) {
+	this.number = number;
+	}
+
+}
+	
+*********************************
+Generic class :- generic class is to handle data of different data type 
+----------------
+	public class List<T>{	//here T - is a place holder 
+		private T[] datastore // to store datatype 
+		private int size ; // size of array 
+		private int pos;
+		
+	public List(int numElements) // create constructor 
+		size = numElements // define a siz of array before passing 
+		pos = 0; // current possition is 0
+		datastore = (T[]) new Object[size];
+	}
+
+// adding the add to add a elemtns 
+	public void add(T element) { // using place holder T as we consider to know thw datatype 
+	datastaore [pos] = element;  // add element to current position of 
+		++pos;
+	}
+	public String toString(){ // to overwrite the method to string 
+		String elements ="";
+		for (int i=0; i< pos ; ++i){		
+			elements +=datastore[i] + " "
+		}
+	return elements;
+}
+
+List implementation :- 
+--------------------
+
+Program to the List class 
+public class ListDriver{
+	public static void main(String [] args ) {
+		List <String> glist = new List <String> (10);
+		glist.add("milk");
+		glist.add("egg");
+	syso (glist.toString):
+}
+
+***************************************
+Write a singleton class.
+public class MySingleton {
+ 
+    private static MySingleton myObj;
+     
+    static{
+        myObj = new MySingleton();
+    }
+     
+    private MySingleton(){
+     
+    }
+     
+    public static MySingleton getInstance(){
+        return myObj;
+    }
+     
+    public void testMe(){
+        System.out.println("Hey.... it is working!!!");
+    }
+     
+    public static void main(String a[]){
+        MySingleton ms = getInstance();
+        ms.testMe();
+    }
+***************************************************
+
+
+//9 key interfaces of Collection framework - Collection:-
+	Collection :- if we want to represent group of object as single element then go for Collection
+	
+	Collections :- this is utility class which define ceverial methods for collections object like Sorting , Searching ,etc.
+
+	Want to sort the Arraylist : 
+		Collections.sort(Arraylist_name);
+	
+	List interface:- when to go ?-> duplicated is allowed and insertion order must be priserved. Is child interface of collection. so herachy are:-
+				Collection
+					|
+					List 
+					|
+				------------------------------------
+				|				|					|
+			Arraylist      Linkedlist			Vector 
+													|
+												Stack
+	ArrayList :- duplicate is allowed , insertion order is priserved , Heterogenious order is allowed , null insertion is allowed ,
+	
+	Set interface:When should to go for ? When we dont want to duplicate values 
+------------------
+						
+				collection
+					|
+					set
+					|
+				HashSet
+					|
+				linkedHashSet
+
+Difference bewteen HashSet 								and LinkedHashSet
+			Insertion order is priserved	|	Insertion order is not Priserved
+					
+				
+	Sortedset :- When we want elements are stored in sorted from without duplicate 
+				
+				collection (I)
+					|
+					set (I)
+					|	
+					SortSet (I)
+					|
+					NavigableSet (I)
+					|
+					TreeSet (I)
+					
+	Queue :- When we want to represent group of objects before processing 
+				
+				collection (I)
+					|
+					Queue (I)
+					|
+				---------------------
+			priorityQueue			BlockingQueue
+										|
+									linkedBlockingQueue
+										|
+									PriorityBlockingQueue
+									
+	Map :- When we want  go for key-values pair. 
+	
+				Map (I)
+				|
+		-------------------------------------------------------------------------
+		Hashmap					WeakHashMap			IdentityHashMap			Dictionary (AC)
+			|																	|
+		linkedHashMap														HashTable
+																				|
+																			Properties
+			
+	SortedMap :- When we go for key-values pair with sorted form 
+		
+				Map (I)
+				|
+			SortedMap (I)
+				|
+			NavigableMap (I)
+				|
+			TreeMap (C)
+	
+	Sorting :-
+		|
+		Comparable (I):- is for default sorting interface
+			|
+		Comparator (I):- is for customised interface		
+				
+			
+	Cursors:- if we want to retrieve one by one then go for 
+		|
+		Enumarator(I)  --> Methods are -> hasNext(), next()
+		Iterator(I)----> Methods are -> HasNext(), next(), remove()
+		ListIterator (I) ---> 
+
+Methods from collection:- 					add(Object 0)
+--------------------------					addAll (Collection C)
+											Remove (Object O)
+											RemoveAll(collection C)
+											clear()
+											RetainAll(Collection C)
+											isEmpty()
+											size()
+											contains(Object o)
+											containsAll(collection C)
+											Object[] a = c.toArray() - To convert into array whereas it's return type is Object 
+											iterator() - to get all object one by one 
+										
+	List (I) methods :- add(int index , object a)
+						addAll(int index , collection c)
+						remove(int index , Object o)
+						l.indexOf("A") // give the index of A
+						l.lastIndexOf() // gives index of A coming in last 
+						l.get(int index)// Object at perticular index
+						List = l.listIterator // get a objects one by one , and return type is list
+						set(int index , object o)// replace object o from index 
+						
+	Arraylist :- 
+	Constructor created for arraylist :- Arraylist l = new Arraylist();
+		Once arraylist reaches it's max capacity new arraylist is created with capacity = (CC(currecnt capacity ) * 3/2)+1 . And old arraylist is eligibale for garbage collection.
+		
+		Constructor created with requried capacity :- arraylist l = new Arraylist(int  initialCapacity)
+
+		
+		if want to create Arraylist equivalent to other linkedlist, treelist ,etc then  :- Arraylist l = new Arraylist(collection c);// this type of constructor is user communicate with linklist to arraylist to vector etc.
+		
+	Serializable (I) and clonable (I):- to pass object or collection of object across network, Serializable has implemented to all collections.
+	as soon as it reaching to receiver it create a clone of this object. 
+	
+	RandomAccess (I):- It is marker interface. to retrieve data on equal time is implemented. only for Arraylist and Vector class.
+	
+
+	Making Arraylist as thread-safe OR By default ArrayList object is Non-Synchronize but get a synchronized version of arraylist by using collections class :-
+	
+					public static List synchronizedList (List i ) {/// Should be define in method, method is having return type as List
+						Arraylist l = new Arraylist();  /// Non-Synchronize objected 
+						List I = collections.synchronizedlist (list l)	 /// Synchronize Object		
+	Linkedlist :- It is useful for  insertion and delation opration .
+	
+	
+	constructor created for Linkedlist:- linkedlist l1 = new linkedlist(); // created empty linkedlist object
+									linkedlist l1 = new linkedlist (collection c) ; // create equivalent linkedlist object for givencollection.
+	
+Cursors :- 	If we want to retrieve objects one  by one then use Cursors . there are 3 type of cursors in java.
+				Enumarator // Enumaration e = new V.Elements();
+				iterator
+				ListIterator
+					| (methods)
+	--------------------------------------------------------------------------------------------------------------------
+	hasNext()	Next()	NextIndex()		hasPrevious()	Previous()	previousIndex()	remove()	set( Object new)	add(Object a)	
+
+					Vector v = new Vector();
+					Enumaration e = v.elements()// Enumaration is interface then how could we created object (e) for Interface;
+											//Firstly, We are not creating a object for interface. 					
+																Class Vector {     /// there is base class vector whose used Enumaration interface
+																		elements(){  ///element method is contain class which implements Enumaration interface
+																			class implements Enumaration     /// 
+																			{
+																			--
+																			--
+																			--
+																			}
+																			return this.class Object  ///and return type of class is this.class object. Hence it returns  object
+																		}
+																}
+	///means "e" is a object referance not a object. So if we print  
+				system.out.print(e.getClass().getName())
+				o/p--->  vector$1
+					(inside Vector > $1 == anonous inner class)
+	// Similary , 
+				Iterator r = v.Iterator();
+				ListIterator lr = v.ListIterator();
+				system.out.print(r.getClass().getName()) /// o/p --> vector$Itr
+				system.out.print(lr.getClass().getName())/// o/p --> vector$ListItr
+				
+you never do-> 
+		Interface ir = new Interface();
+		collection c = new List();
+// Above statement is not applicable for interface. reasion is we never create object for interface. we always refer a object to class. 	
+		
+	
+		
+Difference between Comparetor and comparable :										Comparetor
+If want to go for Comparable (I):- is made for default sorting order.  | Comparator : is for customised sorting order
+		present in java.lang										   | Comparator is present in java.util class	
+		it contains only one method compareTo()						   | Comparator is having 2 methods (compare {} and equal ())
+								
+	
+		
+	****************************************************************************************************************************
+											OOPs 
+										---------------
+	1. Data hiding :- our internal data should not be access by out side person directly. To achive this make data veriable as private.
+	-------------
+		public class account {
+			private double balance; // if the balance method is private then how can any one access this? so to access need call anther //public method 
+			.
+			.
+			.
+			public double getbalance (){
+			// here we perform validation for correct user 
+			return balance;
+				}
+			}
+		
+	2. Obstration :- hiding internal implementation and just highlight set of services what are offering. by using interface and abstracte 
+	----------------
+			
+	3. Encapsulation :- process of binding data memebers and coursponding methods (behaviour) in one unit. if any component follows data hiding
+	---------------- and abstraction is such type of component is said to be encapusated. 
+				
+								Encapsulation = data hiding + abstraction
+	4. tightly encapusation class :- if each and every veriable of class is tightly encapusation.
+		--------------------------
+		
+	5. inheritance :-	All parent's method are avalible to child. But methods child has bydefault is not avalible to parents.
+	------------------
+			class A {					|  class test{
+				public void m1(){		|		public stayic void main(String [] args){
+						}				|		A a = new A();
+			}							|			a. m1(); // valid
+										|			a.m2(); // invalid since child method are not avalible to parents
+			class B extrends B{			|		B b = new B()
+				public void m2(){		|			b.m2() // valid
+				}						|			b.m1()// valid, since Parent method are also avalible to Child 
+			}							|		A a1 = new B() // valid, since parents referance can used to hold child object. But...*
+										|			a1.m1() // valid ,
+										|     		a1.m2()// invalid,*... Object can but method CAN NOT be call.
+										|		B b1 = new A()// invalid, since child referance can Not used to hold Parent  object
+
+			java provide mutiple inheritance support to interface 
+			
+						interface C { 	| interface D {
+						}				|	}
+				interface E extends C, D
+				
+	6. Composition :- Strong association of objects (if there is no existance of object without container) ex. university and department.
+	---------------
+				class Engine{				| class Car {
+				private functionality ();	|    Engine e = new Engine(); // to access the engine functionality method
+				}							|    // basically , Car class has a referance of Engine class.
+											|	
+	7. agreegation :-Week association of objects(if there is  existance of object without container) ex. department and leacturer.
+	--------------
+		When to go for  inheritance and Composition ? :-> 
+				When we want all the functionality/ Methods from parent class to child class -> inheritance. 
+				When we want just few methods from other class then go for - > composition 
+	
+	Method Signiture = method name followed by argument type. ex - behavoiur(int a, float b). Methods signiture is used by compiler to resolved method call.
+	
+	8. Overloadding:- same method name but different agruments. It is happened in same class. 
+	---------------
+		class{							| class test{
+			public void m1(){			|	public static void main (String []args){
+				}						|	 m1('a'); // it is valid since compiler frist look for excat matched agrument type is not found
+			public void m1(int i){		|	 // then it check for next in flow in overloadding like 
+				}						|
+			public void m1(float f){	|		bite---|
+				}						|			   |--int --> long int --> float --> double
+			}							|		char --|
+	
+	9. overridding :- same method and same argument but from different class. If child class method is not satified with parent method then 
+	----------------he can re-define a method. 
+		class A{						|  class test{
+			public void mirrage(){		|		public void main (String args){
+			syso ("Subha");				|		A a = new A();	
+			}							|	     		a.mirrage();// return Subha.
+		}
+										|		B a = new B();
+	class B extends A{					|				a.mirrage();// return Rima.
+			public void mirrage(){		|
+				syso("Rima");			|		A a = new B();
+				}						|				a.mirrage();// return Rima. on runtime JVM check if method is present on child class
+										|
+										|		B a = new A(); // invalid , not hold 
+										
+		Why Overridding is called as runtime polymorsium ? --> on runtime JVM check object is of from child or parent.
+		
+	Rules for Overridding:-
+	----------------------
+		1. Method signiture (method name and argument type)must be matched.					
+		2. Return type must be same or (Coverient type ) child type is also allowed (like Object and string since string is child of Object hence allowed But Vice versa is not allowed)
+		3. Parent's private method is not avalible to child hence no Overridding.
+		4. Final method is not be overridding. 
+		5. parent class abstracte method should be overridding in child class to provide implementation. 
+						abstracte class P {
+							 public abstracte void m1()
+								}
+						class C extends P {
+								public void m1()
+							}
+
+		6. we can overridding non-abstracte method as abstract. Advantange is We stop implementation of parent method further herachy and it's child method should re-define a method.
+						class P{
+							public void m1(){}
+						}
+						abstract class C extends P{
+							 public abstract void m1(){}
+						}
+						
+		7. In overridding following modifier wont keep any restriction , syncronisation, native , 
+		8. We cant reduce the scope of access modifier But we can increase the scope. hence it is below code gives error 
+				class P {					
+					public void m1()		
+				}
+				class C extends P{
+					 void m1() 
+				}
+				
+		9. if child class throws any checked exception then parent class should throw checked exception. 
+	ex. - 	P. public void m1 () throws exception   // Parent throws checked exception but child wont it's ok
+			c. public void m1 () 
+	
+//	Child  throws checked exception but Parent  wont , Compilation error 
+					P.public void m1 ()
+					c. public void m1 () throws exception 
+					
+// 	Child  throws checked exception And  Parent  throws Parent's of IOException , It's OK			
+			P. public void m1() throws exception 
+			C. public void m1() throws IOException
+	
+//	Child  throws exception  And  Parent class throws IOException (which child of exception) , compilation error
+					P. public void m1() throws IOException
+					C. public void m1() throws exception
+					
+//	Working 			
+			P.public void m1() throws IOException 
+			C. public void m1() throws Filenotfound
+//Not working 
+					P. public void m1() IOException
+					C. public void m1() throws incrementalException
+// 		
+			P.public void m1() throws IOException
+			C. public void m1() throws AE, 
+			
+		
+	10. Polymorphisum:- Why we use polymorsium ( ParentClass object  = new ChildClass ()). Parent Object hold a referance of child 
+----------------------	still this object only use to call parent methods NOT child. Then what is advantage of using this? 
+			Object array can hold any type of object. So we specific parent type then all child object can be hold in it.
+	
+
+Printing output without using main () method -
+-------------------------------------------
+	1. class A{    // with using static block
+		static{
+			syso("hello hi are you");
+			system.exit(0);
+				}
+		}
+	2. // without using static bloc and main method     class A{
+															static int x= m1();
+															public static int m1(){
+																syso("how hi how are u ");
+																system.exit(0);
+																return 0;
+																}
+														}	
+
+
+							
+
+										
+// Find the string of odd index
+public void StringIndex(){
+
+	String result = null;
+	
+	String[] a ={"asd", "asdasd", "adfdf"}
+	//				0		1		2
+		
+		for (int i=0; i< a.lenght();i++){
+			if (!i%2=0){
+				System.out.printin(a[i]+"String of oad index");
+				result=result + a[i];
+			
+			}
+			
+		}
+		System.out.printin(result+"final result ");
+		
+}
+
+----------------------------------------------------------------------------------------------
+///Full Java Program To Reverse Each Word Of A String :
+
+		static void reverseEachWordOfString(String inputString)
+		{
+			String[] words = inputString.split(" ");
+			 
+			String reverseString = "";
+			 
+			for (int i = 0; i < words.length; i++) 
+			{
+				String word = words[i];
+				 
+				String reverseWord = "";
+				 
+				for (int j = word.length()-1; j >= 0; j--) 
+				{
+					reverseWord = reverseWord + word.charAt(j);
+				}
+				 
+				reverseString = reverseString + reverseWord + " ";
+			}
+			 
+			System.out.println(inputString);
+			 
+			System.out.println(reverseString);
+			 
+			System.out.println("-------------------------");
+		}
+		 
+		public static void main(String[] args) 
+		{
+			reverseEachWordOfString("Java Concept Of The Day");
+		}
+		
+-------------------------------------------------------------------------------------------------
+
+------------------------------------------------------------------------------------------------------
+//Find Continuous Sub Array In Array Whose Sum Is Equal To Number :
+
+import java.util.Arrays;
+ 
+public class SubArrayWhoseSumIsNumber
+{
+    static void findSubArray(int[] inputArray, int inputNumber)
+    {
+        //Initializing sum with the first element of the inputArray
+ 
+        int sum = inputArray[0];
+ 
+        //Initializing starting point with 0
+ 
+        int start = 0;
+ 
+        //Iterating through inputArray starting from second element
+ 
+        for (int i = 1; i < inputArray.length; i++)
+        {
+            //Adding inputArray[i] to the current 'sum'
+ 
+            sum = sum + inputArray[i];
+ 
+            //If sum is greater than inputNumber then following loop is executed until
+ 
+            //sum becomes either smaller than or equal to inputNumber
+ 
+            while(sum > inputNumber && start <= i-1)
+            {
+                //Removing starting elements from the 'sum'
+ 
+                sum = sum - inputArray[start];
+ 
+                //Incrementing start by 1
+ 
+                start++;
+            }
+ 
+            //If 'sum' is equal to 'inputNumber' then printing the sub array
+  
+            if(sum == inputNumber)
+            {
+                System.out.println("Continuous sub array of "+Arrays.toString(inputArray)+" whose sum is "+inputNumber+" is ");
+ 
+                for (int j = start; j <= i; j++)
+                {
+                    System.out.print(inputArray[j]+" ");
+                }
+ 
+                System.out.println();
+            }
+        }
+    }
+ 
+    public static void main(String[] args)
+    {
+        findSubArray(new int[]{42, 15, 12, 8, 6, 32}, 26);
+ 
+        findSubArray(new int[]{12, 5, 31, 13, 21, 8}, 49);
+ 
+        findSubArray(new int[]{15, 51, 7, 81, 5, 11, 25}, 41);
+    }
+}
+
+**********************************************************************************
+There are two numbers ‘a’ and ‘b’. Write a java program which should print ‘a’ if ‘a’ is bigger than ‘b’ by 2 or more or should print ‘b’ if ‘b’ is bigger than ‘a’ by 2 or more. Otherwise, it should print “INCONCLUSIVE”?
+		public class BiggerNumber
+		{
+			public static void main(String[] args)
+			{
+				Scanner sc = new Scanner(System.in);
+		 
+				System.out.println("Enter First number");
+		 
+				int a = sc.nextInt();
+		 
+				System.out.println("Enter Second Number");
+		 
+				int b = sc.nextInt();
+		 
+				if((a > b) && (a - b) >= 2)
+				{
+					System.out.println(a);
+				}
+				else if ((b > a) && (b - a) >=2)
+				{
+					System.out.println(b);
+				}
+				else
+				{
+					System.out.println("INCONCLUSIVE");
+				}
+			}
+***********************************************************************************
+What will be the output of the below program?
+
+public class CodingExamples
+{
+    public static void main(String[] args)
+    {
+        String[] s1 = {"ONE", "TWO", "THREE", "FOUR"};
+ 
+        String[] s2 = {"THREE", "TWO", new String("ONE")};
+ 
+        System.out.println(s1[0] == s2[2]);
+ 
+        System.out.println(s1[1] == s2[1]);
+ 
+        System.out.println(s1[2] == s2[0]);
+    }
+}
+Ans :
+	false
+	true
+	true
+************************************************************************************
+To Count Occurrences Of Each Character In String :--
+		String a ="thismeoamnotworkingonthis";
+		int counter=0;
+		Hashtable <Character, Integer> hs = new Hashtable<Character, Integer>();
+		
+		char [] inputString= a.toCharArray();
+		for (int i=0; i <= (inputString.length-1);i ++){
+			
+			for (int j= 1; j < inputString.length-1; j++){
+				
+				if (inputString[i]==inputString[j]){
+					counter++;
+				}
+	
+			}
+			hs.put(inputString[i], counter);
+			counter=0;
+		}
+		System.out.println(hs+"*");
+	}
+	
+Second approched :-	
+									static void characterCount(String inputString)
+												{
+													//Creating a HashMap containing char as a key and occurrences as  a value
+											 
+													HashMap<Character, Integer> charCountMap = new HashMap<Character, Integer>();
+											 
+													//Converting given string to char array
+											 
+													char[] strArray = inputString.toCharArray();
+											 
+													//checking each char of strArray
+											 
+													for (char c : strArray)
+													{
+														if(charCountMap.containsKey(c))
+														{
+															//If char is present in charCountMap, incrementing it's count by 1
+											 
+															charCountMap.put(c, charCountMap.get(c)+1);
+														}
+														else
+														{
+															//If char is not present in charCountMap,
+															//putting this char to charCountMap with 1 as it's value
+											 
+															charCountMap.put(c, 1);
+														}
+													}
+											 
+													//Printing the charCountMap
+											 
+													System.out.println(charCountMap);
+												}
+											 
+												public static void main(String[] args)
+												{
+												   characterCount("Java J2EE Java JSP J2EE");
+ 
+************************************************************************************
+ Find Continuous Sub Array In Array Whose Sum Is Equal To Number :
+			static void findSubArray(int[] inputArray, int inputNumber)
+			{
+				//Initializing sum with the first element of the inputArray
+		 
+				int sum = inputArray[0];
+		 
+				//Initializing starting point with 0
+		 
+				int start = 0;
+		 
+				//Iterating through inputArray starting from second element
+		 
+				for (int i = 1; i < inputArray.length; i++)
+				{
+					//Adding inputArray[i] to the current 'sum'
+		 
+					sum = sum + inputArray[i];
+		 
+					//If sum is greater than inputNumber then following loop is executed until
+		 
+					//sum becomes either smaller than or equal to inputNumber
+		 
+					while(sum > inputNumber && start <= i-1)
+					{
+						//Removing starting elements from the 'sum'
+		 
+						sum = sum - inputArray[start];
+		 
+						//Incrementing start by 1
+		 
+						start++;
+					}
+		 
+					//If 'sum' is equal to 'inputNumber' then printing the sub array
+		 
+					if(sum == inputNumber)
+					{
+						System.out.println("Continuous sub array of "+Arrays.toString(inputArray)+" whose sum is "+inputNumber+" is ");
+		 
+						for (int j = start; j <= i; j++)
+						{
+							System.out.print(inputArray[j]+" ");
+						}
+		 
+						System.out.println();
+					}
+				}
+			}
+		 
+			public static void main(String[] args)
+			{
+				findSubArray(new int[]{42, 15, 12, 8, 6, 32}, 26);
+				}
+************************************************************************************
+/// Synchronize ArrayList, HashSet And HashMap In Java?
+public static void main(String[] args) 
+    {
+        //Creating non synchronized ArrayList object
+         
+        ArrayList<String> list = new ArrayList<String>();
+         
+        //Adding elements to list
+         
+        list.add("JAVA");
+         
+        list.add("STRUTS");
+         
+        list.add("JSP");
+         
+        list.add("SERVLETS");
+         
+        list.add("JSF");
+         
+        //Getting synchronized list
+         
+        List<String> synchronizedList = Collections.synchronizedList(list);
+         
+        //you must use synchronized block while iterating over synchronizedList
+         
+        synchronized (synchronizedList) 
+        {
+            Iterator<String> it = synchronizedList.iterator();
+             
+            while (it.hasNext()) 
+            {
+                System.out.println(it.next());
+            }
+        }
+		
+																public static void main(String[] args) 
+																			{
+																				//Creating non synchronized HashSet object
+																				 
+																				HashSet<String> set = new HashSet<String>();
+																				 
+																				//Adding elements to set
+																				 
+																				set.add("JAVA");
+																				 
+																				set.add("STRUTS");
+																				 
+																				set.add("JSP");
+																				 
+																				set.add("SERVLETS");
+																				 
+																				set.add("JSF");
+																				 
+																				//Getting synchronized set
+																				 
+																				Set<String> synchronizedSet = Collections.synchronizedSet(set);
+																				 
+																				//you must use synchronized block while iterating over synchronizedSet
+																				 
+																				synchronized (synchronizedSet) 
+																				{
+																					Iterator<String> it = synchronizedSet.iterator();
+																					 
+																					while (it.hasNext()) 
+																					{
+																						System.out.println(it.next());
+																					}
+																				}
+																				
+			public static void main(String[] args) 
+    {
+        //Creating HashMap object which is not synchronized
+         
+        HashMap<String, Integer> map = new HashMap<String, Integer>();
+         
+        //Adding elements to map
+         
+        map.put("ONE", 1);
+         
+        map.put("TWO", 2);
+         
+        map.put("THREE", 3);
+         
+        map.put("FOUR", 4);
+         
+        map.put("FIVE", 5);
+         
+        //Getting synchronized map
+         
+        Map<String, Integer> synchronizedMap = Collections.synchronizedMap(map);
+         
+        Set<String> keySet = synchronizedMap.keySet();
+         
+        System.out.println("Keys.............");
+         
+        //While iterating over synchronizedMap, you must use synchronized block.
+         
+        synchronized (synchronizedMap) 
+        {
+            Iterator<String> it = keySet.iterator();
+             
+            while (it.hasNext()) 
+            {
+                System.out.println(it.next());
+            }
+        }
+         
+        Collection<Integer> values = synchronizedMap.values();
+         
+        System.out.println("Values.............");
+         
+        //While iterating over synchronizedMap, you must use synchronized block.
+         
+        synchronized (synchronizedMap) 
+        {
+            Iterator<Integer> it = values.iterator();
+             
+            while (it.hasNext()) 
+            {
+                System.out.println(it.next());
+            }
+        }
+************************************************************************************
+// Print Fizz if it is divisible by 3 and it prints Buzz if it is divisible by 5. It prints FizzBuss if it is divisible by both. Otherwise, it will print the numbers between 1 and 100.
+
+	for(int i=1;i<=n;i++)
+        {
+            if(i%5==0)
+            System.out.println("Buzz");
+            else if(i%3==0)
+            System.out.println("Fizz");
+            else if((i%3==0)&&(i%5==0))
+            System.out.println("FizzBuzz");
+            else System.out.println(i);
+        }
+ 
+*********************************************************************************************
+		
+How To Count Occurrences Of Each Element In An Array?
+ For example, if {12, 9, 12, 9, 10, 9, 10, 11} is the input array, then the count of occurrences of each element is {12:2, 9:3, 10:2, 11:1}.
+ 
+******************************************************************************************
+
+How To Convert Math Number To Equivalent Readable Word In Java :-
+	
+	
+  public void pw(int n,String ch)
+  {
+    String  one[]={" "," one"," two"," three"," four"," five"," six"," seven"," eight"," Nine"," ten"," eleven"," twelve"," thirteen"," fourteen","fifteen"," sixteen"," seventeen"," eighteen"," nineteen"};
+ 
+    String ten[]={" "," "," twenty"," thirty"," forty"," fifty"," sixty","seventy"," eighty"," ninety"};
+ 
+    if(n > 19) { System.out.print(ten[n/10]+" "+one[n%10]);} else { System.out.print(one[n]);}
+    if(n > 0)System.out.print(ch);
+  }
+  public static void main(String[] args)
+  {
+    int n=0;
+    Scanner scanf = new Scanner(System.in);
+    System.out.println("Enter an integer number: ");
+    n = scanf.nextInt();
+    
+    if(n < = 0)                   
+      System.out.println("Enter numbers greater than 0");
+   }
+   else
+   {
+      YourNumberMyWord a = new YourNumberMyWord();
+      a.pw((n/1000000000)," Hundred");
+      a.pw((n/10000000)%100," crore");
+      a.pw(((n/100000)%100)," lakh");
+      a.pw(((n/1000)%100)," thousand");
+      a.pw(((n/100)%10)," hundred");
+      a.pw((n%100)," ");
+    }
+  }
+  ********************************************************************************************
+  Given an array if integers that is circularly stored, how do you find a given integer with complexity not greater than O(log n).?
+		Example: Search for 13 in {5,9,13,1,3}.
+				Input arr[] = {3, 4, 5, 1, 2}
+						Element to Search = 1
+						  1) Find out pivot point and divide the array in two
+							  sub-arrays. (pivot = 2) /*Index of 5*/
+						  2) Now call binary search for one of the two sub-arrays.
+							  (a) If element is greater than 0th element then
+									 search in left array
+							  (b) Else Search in right array
+								  (1 will go in else as 1 < 0th element(3))
+						  3) If element is found in selected sub-array then return index
+							 Else return -1.
+
+
+***********************************************************************************************
+
+							 
+
+§  Implement 3 stacks in a single array.
+			1) Define two stacks beginning at the array endpoints and growing in opposite directions.
+
+			2) Define the third stack as starting in the middle and growing in any direction you want.
+
+			3) Redefine the Push op, so that when the operation is going to overwrite other stack, you shift the whole middle stack in the opposite direction before Pushing.
+
+			You need to store the stack top for the first two stacks, and the beginning and end of the third stack in some structure.
+
+			Edit
+
+			alt text
+
+			Above you may see an example. The shifting is done with an equal space partitioning policy, although other strategies could be chosen depending upon your problem heuristics.
+
+			Edit
+
+			Following @ruslik's suggestion, the middle stack could be implemented using an alternating sequence for subsequent pushes. The resulting stack structure will be something like:
+
+			| Elem 6 | Elem 4 | Elem 2 | Elem 0 | Elem 1 | Elem 3 | Elem 5 |
+
+
+			
+§  How would you design a search engine?
+			a web crawler (spider) which collects the content of web pages parsing the HTML and following links
+			a full text search engine to store and index the data
+			a web interface for querying the full text index
+
+
+§  How would you determine a winner in a game of tic-tac-toe?
+			public class TicTacToe
+			{
+				char[][] ticTacToe = 
+				{{'X',' ','O'},
+				 {'O','X','O'},
+				 {'X',' ','X'},};
+
+				private Character winner = null;
+
+				public Character getWinner()
+				{
+					return this.winner;
+				}
+
+				public boolean isSolved()
+				{
+					this.checkSolved();
+					return this.winner != null;
+				}
+
+				private void checkSolved()
+				{
+					for(int i = 0; i < ticTacToe.length; i++)
+					{
+						Character win = checkRow(i);
+						if(win != null || (win = checkColumn(i)) != null)
+						{
+							this.winner = win;
+							return;
+						}
+					}
+					//Check diagonal top left to bottom right
+					if(this.ticTacToe[0][0] != ' ')
+					{
+						if(this.ticTacToe[0][0] == this.ticTacToe[1][1] &&
+						   this.ticTacToe[1][1] == this.ticTacToe[2][2])
+						{
+							this.winner = this.ticTacToe[0][0];
+						}
+					}
+					//Check diagonal top right to bottom left
+					else if(this.ticTacToe[0][2] != ' ')
+					{
+						if(this.ticTacToe[0][2] == this.ticTacToe[1][1] &&
+						   this.ticTacToe[1][1] == this.ticTacToe[2][0])
+						{
+							this.winner = this.ticTacToe[0][2];
+						}
+					}
+				}
+
+				private Character checkRow(int row)
+				{
+					if(this.ticTacToe[row][0] == ' ')
+					{
+						return null;
+					}
+					if(this.ticTacToe[row][0] == this.ticTacToe[row][1] &&
+					   this.ticTacToe[row][1] == this.ticTacToe[row][2])
+					{
+						return this.ticTacToe[row][0];
+					}
+					return null;
+				}
+
+				private Character checkColumn(int column)
+				{
+					if(this.ticTacToe[0][column] == ' ')
+					{
+						return null;
+					}
+					if(this.ticTacToe[0][column] == this.ticTacToe[1][column] &&
+					   this.ticTacToe[1][column] == this.ticTacToe[2][column])
+					{
+						return this.ticTacToe[column][0];
+					}
+					return null;
+				}
+
+				public static void main(String[] args)
+				{
+					TicTacToe ttt = new TicTacToe();
+					if(ttt.isSolved())
+					{
+						System.out.println(ttt.getWinner());  // X
+					}
+				}
+			}
+
+*****************************************************************************************************
+/* Write a program to convert given no. of days into months and days.
+
+  (Assume that each month is of 30 days)
+
+  Example :
+
+           Input - 69
+
+           Output - 69 days = 2 Month and 9 days */
+
+class DayMonthDemo{
+
+      public static void main(String args[]){
+
+      int num = Integer.parseInt(args[0]);
+
+      int days = num%30;
+
+      int month = num/30;
+
+      System.out.println(num+" days = "+month+" Month and "+days+" days");
+
+   }
+*****************************************************************************************************
+/*Write a program to find average of consecutive N Odd no. and Even no. */
+
+class EvenOdd_Avg{
+
+      public static void main(String args[]){
+
+      int n = Integer.parseInt(args[0]);
+
+      int cntEven=0,cntOdd=0,sumEven=0,sumOdd=0;
+
+      while(n > 0){
+
+           if(n%2==0){
+
+               cntEven++;
+
+               sumEven = sumEven + n;
+
+           }
+
+           else{
+
+               cntOdd++;
+
+               sumOdd = sumOdd + n;
+
+           }
+
+           n--;
+
+      }
+
+      int evenAvg,oddAvg;
+
+      evenAvg = sumEven/cntEven;
+
+      oddAvg = sumOdd/cntOdd;
+
+      System.out.println("Average of first N Even no is "+evenAvg);
+
+      System.out.println("Average of first N Odd no is "+oddAvg);
+
+ 
+
+  }
+
+}
+
+
+*****************************************************************************************************
+Find the unique values from Array 
+public static void main(String[] args) {
+
+		int[] a = { 1, 2, 3, 4, 3, 4, 6, 5, 4, 3 };
+		for (int i = 0; i <= a.length - 1; i++) {
+			int c = 0;
+			for (int j = i + 1; j <= a.length - 1; j++) {
+				if (a[i] == a[j]) {
+					c++;
+				}
+
+			}
+			if (c == 0) {
+				System.out.print(a[i]);
+			}
+		}
+
+*****************************************************************************************************
+§  Given an array of integers, replace each number in the array with the product of all of the integers except for the one being replaced.
+public static void main(String[] args) {
+
+		int[] a = { 1, 2, 3, 4, 3, 4, 6, 5, 4, 3 };
+		for (int i = 0; i <= a.length - 1; i++) {
+			int c = 1;
+			for (int j = 0; j <= a.length - 1; j++) {
+				if (i != j) {
+					c*=a[j];
+				}
+
+			}
+			
+				System.out.println(c);
+			
+		}
+*****************************************************************************************************
+§  Can you write a function to find out if a given number is a power of 5?
+--> simple solution is = if (number %5)
+*******************************************************************************************************
+// REading text file with For loop 
+				//		BufferedReader bf = new BufferedReader(new FileReader(
+				//				"//home//sachin//Desktop//textRead"));
+				//
+				//		for (int i = 0; i <= 3; i++) {
+				//			System.out.println(bf.readLine());
+				//
+				//		}
+
+//	reading text file with while loop 	
+// 		
+		String str= null;
+		BufferedReader bf = new BufferedReader(new FileReader(
+				"//home//sachin//Desktop//textRead"));
+		
+		
+		while ((str=bf.readLine())!=null){
+			System.out.println(str);
+*******************************************************************************************************************************
+// Check if three even number comes in sequence then return true else false 		
+List<Integer> ds = new ArrayList<Integer>();
+		int[] b = { 1, 22, 44, 6, 66, 52, 71 };
+
+		for (int i = 0; i < b.length; i++) {
+			if (b[i] % 2 == 0) {
+				ds.add(i);
+
+			}
+		}
+
+		System.out.println(ds.size());
+		for (int j = 0; j <= ds.size()-1; j++) {
+
+			if ((ds.get(j) + 1) == ds.get(j+1)) {
+				counter++;
+				if (counter == 3) {
+					break;
+				}
+			}
+		}
+		System.out.println("true");
+	}
+*******************************************************************************************************************************
+// Java program to Convert String into reverse  String 
+
+ public static void main(String[] args) {
+
+  String a = "This is my country , And I love my Country";
+  String b="";
+  for (int i = a.length()-1; i > 0; i--) {
+
+    b+=a.charAt(i);
+  }
+   System.out.println(b +"\n" +a);
+ }
+*********************************************************************************
+// Java program to reverse integer array 
+
+public static void main(String[] args) {
+  int[] inputArray = { 2, 4, 6, 3, 8, 9, 44, 3 ,22};
+  int [] OutputArray = new int [inputArray .length];  // define lenght of int array
+  int j =0;  // define counter for OutputArray 
+// take element from end of  inputArray and add in front of outputArray
+  for (int i =a.length-1; i>0;i-- ){
+   b[j]= a[i];
+   
+   System.out.println(a[i]+"**"+b[j]);
+   j++; // Increase a counter 
+  }
+  
+  
+ }
+*********************************************************************************
+// Java program to reverse integer array with binary 
+
+*********************************************************************************
+
+//// Java program to reverse words of String 
+			// input =>"This is my country And I love my Country";
+			//output => "sihT si ym yrtnuoc dnA I evol ym yrtnuoC"
+
+			  public static void main(String[] args) {
+			  String inputString = "This is my country And I love my Country";  //input string
+
+			  String[] words = inputString.split(" "); //split words, now -->This , is , my , country,..etc
+
+			  String reverseString = ""; // get output in this.
+
+			// first loop to get get each words one by one from string 
+			  for (int i = 0; i < words.length; i++) {
+			   String word = words[i]; //initi, word  contain -"This" in next iteration it's "is " & so on
+
+			   String reverseWord = ""; // get a output (reverse word)
+
+			//second loop is for to reverse a word
+			   for (int j = word.length() - 1; j >= 0; j--) {
+				reverseWord = reverseWord + word.charAt(j); //append chars in reverse manner
+			   }
+
+			   reverseString = reverseString + reverseWord + " "; //appends words as process from inner loop
+			  }
+
+			  System.out.println(inputString);
+
+			  System.out.println(reverseString);
+
+			 }
+
+*********************************************************************************
+// Prefix and post fix 
+
+  public static void main(String[] args){
+  int x;
+  int a = 100;
+  System.out.println(a-- +"==="+--a);
+                                          //100   99           98
+                          //         values   postfix    ,prefix 99 is became 98
+  x=a-- - --a;
+  System.out.println(x); //output is -->2
+ }
+
+}
+
+*********************************************************************************
+
+ //To Find Duplicate Elements In An Array 
+
+ public static void main(String[] args) 
+    {
+        String[] strArray = {"abc", "def", "mno", "xyz", "pqr", "xyz", "def"};
+        for (int i = 0; i < strArray.length-1; i++) //to take 1 element from array
+        {
+            for (int j = i+1; j < strArray.length; j++)//compare all the element in array one by one
+            {
+                if( (strArray[i].equals(strArray[j])) && (i != j) ) 
+                                                      //to avoid outOfIndex Error
+                {
+                    System.out.println("Duplicate Element is : "+strArray[j]);
+                }
+            }
+        }
+    }    
+
+*********************************************************************************
+// Find Second Largest Number In An Integer Array :
+
+ public static void main(String[] args) {
+
+        int firstLargest, secondLargest;
+       if(input[0] > input[1])  //Checking first two elements of input array
+
+        {
+            //If first element is greater than second element
+            firstLargest = input[0];
+            secondLargest = input[1];
+        }
+        else
+        {
+            //If second element is greater than first element
+            firstLargest = input[1];
+            secondLargest = input[0];
+        }
+        //Checking remaining elements of input array
+        for (int i = 2; i < input.length; i++)
+        {
+            if(input[i] > firstLargest)
+            {
+                //If element at 'i' is greater than 'firstLargest'
+                secondLargest = firstLargest;
+                firstLargest = input[i];
+            }
+            else if (input[i] < firstLargest && input[i] > secondLargest)
+            {
+                //If element at 'i' is smaller than 'firstLargest' and greater than 'secondLargest'
+                secondLargest = input[i];
+            }
+        }
+
+  System.out.println(secondLargest );
+
+     }
+
+
+*********************************************************************************
+// Sorting the integer array 
+
+
+ public static void main(String[] args) {
+ int[] inputArray = { 1, 2, 4, 6, 3, 8, 9, 44, 3, 22 };
+        int temp, pos;
+        for (int i = 0; i < inputArray.length - 1; i++)//loop for taking first element 
+        {
+            pos = i;  // initializing pos variable within for loop so every-time it is incremented
+            //finding the position of smallest element between (i+1)th element and last element
+            for (int j = i+1; j < inputArray.length; j++)
+            {
+                if(inputArray[j] < inputArray[pos] ) // condition to find smallest element 
+                {
+                    pos = j;
+                }
+            }
+            //Swapping inputArray[i] and inputArray[pos]
+            temp = inputArray[i];
+            inputArray[i] = inputArray[pos];
+            inputArray[pos] = temp;
+        }
+        for (int i = 0; i < inputArray.length; i++)
+        {
+            System.out.print(inputArray[i] + " ");
+        }
+        System.out.println();
+    }
+*********************************************************************************
+// Find a continues sub array whose sum is equal to inputNumber
+
+ public static void main(String[] args) {
+  int[] inputArray = { 1, 2, 4, 6, 3, 8, 9, 44, 3, 22 };
+  int inputNumber = 15;
+  
+  int sum = 0; // Initializing 'sum' to 0
+
+
+  // Iterating through 'inputArray'
+
+  for (int i = 0; i < inputArray.length; i++) {
+  
+   sum = inputArray[i];  // Assigning inputArray[i] to 'sum'
+
+
+   for (int j = i + 1; j < inputArray.length; j++) {
+    // Adding inputArray[j] to 'sum'
+
+    sum = sum + inputArray[j];
+
+    // If 'sum' is equal to 'inputNumber' then printing the sub array
+
+    if (sum == inputNumber) {
+     System.out.println("Continuous sub array of "
+       + Arrays.toString(inputArray) + " whose sum is "
+       + inputNumber + " is ");
+
+                  //print sub array from i element to j element which satisfy a condition 
+     for (int k = i; k <= j; k++) {
+      System.out.print(inputArray[k] + " ");
+     }
+
+     System.out.println();
+    }
+
+    // if 'sum' is smaller than 'inputNumber', continue the loop
+
+    else if (sum < inputNumber) {
+     continue;
+    }
+
+    // if 'sum' is greater than 'inputNumber', then break the loop
+
+    else if (sum > inputNumber) {
+     break;
+    }
+   }
+  }
+
+*********************************************************************************
+// Reverse The String With Preserving The Position Of Spaces :
+
+ public static void main(String[] args) {
+
+  String inputString = "Hi this is good tested Nagard";
+
+         
+        char[] inputStringArray = inputString.toCharArray();//Converting inputString to char array 'inputStringArray'
+         
+        //Defining a new char array 'resultArray' with same size as inputStringArray
+         
+        char[] resultArray = new char[inputStringArray.length];
+         
+        //First for loop : 
+        //For every space in the 'inputStringArray', 
+        //we insert spaces in the 'resultArray' at the corresponding positions 
+         
+        for (int i = 0; i < inputStringArray.length; i++) 
+        {
+            if (inputStringArray[i] == ' ') 
+            {
+                resultArray[i] = ' ';
+            }
+        }
+         
+        //Initializing 'j' with length of resultArray
+         
+        int j = 0;
+                 
+        //Second for loop :
+        //we copy every non-space character of inputStringArray 
+        //from first to last at 'j' position of resultArray
+         
+        for (int i = inputStringArray.length-1; i >0; i--)
+        {
+            if (inputStringArray[i] != ' ') 
+            {
+                //If resultArray already has space at index j then decrementing 'j'
+                 
+                if(resultArray[j] != ' ')
+                {
+                   resultArray[j] = inputStringArray[i];
+                }
+                 
+                               
+                j++;
+            }
+        }
+         
+*********************************************************************************
+//Find The Percentage Of Uppercase Letters, Lowercase Letters, Digits And Other Special Characters In A String
+
+  public static void main(String[] args) {
+
+
+  String inputString = "Hi My email id is Test@gmail.com 112 time appear";
+
+ //Getting total no of characters in the given string
+         
+        int totalChars = inputString.length();
+         
+        //Initializing upperCaseLetters, lowerCaseLetters, digits and others with 0
+         
+        int upperCaseLetters = 0;
+         
+        int lowerCaseLetters = 0;
+         
+        int digits = 0;
+         
+        int others = 0;
+         
+        //Iterating through each character of inputString
+         
+        for (int i = 0; i < inputString.length(); i++) 
+        {
+            char ch = inputString.charAt(i);
+             
+            //If ch is in uppercase, then incrementing upperCaseLetters
+             
+            if(Character.isUpperCase(ch))
+            {
+                upperCaseLetters++;
+            }
+             
+            //If ch is in lowercase, then incrementing lowerCaseLetters
+             
+            else if(Character.isLowerCase(ch))
+            {
+                lowerCaseLetters++;
+            }
+             
+            //If ch is a digit, then incrementing digits
+             
+            else if (Character.isDigit(ch))
+            {
+                digits++;
+            }
+             
+            //If ch is a special character then incrementing others
+             
+            else
+            {
+                others++;
+            }
+        }
+         
+        //Calculating percentage of uppercase letters, lowercase letters, digits and other characters
+         
+        double upperCaseLetterPercentage = (upperCaseLetters * 100.0) / totalChars ;
+         
+        double lowerCaseLetterPercentage = (lowerCaseLetters * 100.0) / totalChars;
+         
+        double digitsPercentage = (digits * 100.0) / totalChars;
+         
+        double otherCharPercentage = (others * 100.0) / totalChars;
+         
+        DecimalFormat formatter = new DecimalFormat("##.##");
+         
+        //Printing percentage of uppercase letters, lowercase letters, digits and other characters
+         
+        System.out.println("In '"+inputString+"' : ");
+         
+        System.out.println("Uppercase letters are "+formatter.format(upperCaseLetterPercentage)+"% ");
+         
+        System.out.println("Lowercase letters are "+formatter.format(lowerCaseLetterPercentage)+"%");
+         
+        System.out.println("Digits Are "+formatter.format(digitsPercentage)+"%");
+         
+        System.out.println("Other Characters Are "+formatter.format(otherCharPercentage)+"%");
+         
+ }
+}
+***********************************************************************************
+// Creation Of Matrix In Java
+
+Scanner sc = new Scanner(System.in);
+         
+        System.out.println("Enter The Number Of Rows");
+         
+        int row = sc.nextInt();
+         
+        System.out.println("Enter The Number Of Columns");
+         
+        int cols = sc.nextInt();
+         
+        //defining 2D array to hold matrix data
+         
+        int[][] matrix = new int[row][cols];
+         
+        System.out.println("Enter Matrix Data");
+         
+        for (int i = 0; i < row; i++)
+        {
+            for (int j = 0; j < cols; j++)
+            {
+                matrix[i][j] = sc.nextInt(); 
+            }
+        }
+         
+        System.out.println("Your Matrix is : ");
+         
+        for (int i = 0; i < row; i++)
+        {
+            for (int j = 0; j < cols; j++)
+            {
+                System.out.print(matrix[i][j]+"\t");
+            }
+             
+            System.out.println();
+        }
+  
+*********************************************************************************
+//Matrix Addition In Java
+    
+public static void main(String[] args) {
+  
+
+         Scanner sc = new Scanner(System.in); // Make ready compiler to ready from data 
+       
+         System.out.println("Enter The Number Of Rows");
+       
+         int row = sc.nextInt();
+       
+         System.out.println("Enter The Number Of Columns");
+       
+         int cols = sc.nextInt();
+       
+         int[][] matrix1 = new int[row][cols]; // Define matrix
+       
+         int[][] matrix2 = new int[row][cols];
+       
+         int[][] sum = new int[row][cols];
+       
+         System.out.println("Enter The Data For First Matrix :");
+       
+         for (int i = 0; i < row; i++)
+         {
+             for (int j = 0; j < cols; j++)
+             {
+                 matrix1[i][j] = sc.nextInt();
+             }
+         }
+       
+         System.out.println("Enter The Data For Second Matrix :");
+       
+         for (int i = 0; i < row; i++)
+         {
+             for (int j = 0; j < cols; j++)
+             {
+                 matrix2[i][j] = sc.nextInt();
+             }
+         }
+       
+      
+         System.out.println("Sum = ");
+       
+         for (int i = 0; i < row; i++)
+         {
+             for (int j = 0; j < cols; j++)
+             {
+                 sum[i][j] = matrix1[i][j] + matrix2[i][j];
+               
+                 System.out.print(sum[i][j]+"\t");
+             }
+           
+             System.out.println();
+         }
+*********************************************************************************
+// Multiplication of Matrix 
+
+  public static void main(String[] args) 
+    {
+        Scanner sc = new Scanner(System.in);
+         
+        System.out.println("Enter The Number Of Rows In First Matrix");
+         
+        int rowsInFirst = sc.nextInt();
+         
+        System.out.println("Enter The Number Of Columns In First Matrix / Rows In Second Matrix");
+         
+        int colsInFirstRowsInSecond = sc.nextInt();
+         
+        System.out.println("Enter The Number Of Columns In Second Matrix");
+         
+        int colsInSecond = sc.nextInt();
+         
+        int[][] matrix1 = new int[rowsInFirst][colsInFirstRowsInSecond];
+         
+        int[][] matrix2 = new int[colsInFirstRowsInSecond][colsInSecond];
+         
+        int[][] product = new int[rowsInFirst][colsInSecond];
+         
+        System.out.println("Enter The Data For First Matrix :");
+         
+        for (int i = 0; i < rowsInFirst; i++)
+        {
+            for (int j = 0; j < colsInFirstRowsInSecond; j++)
+            {
+                matrix1[i][j] = sc.nextInt();
+            }
+        }
+         
+        System.out.println("Enter The Data For Second Matrix :");
+         
+        for (int i = 0; i < colsInFirstRowsInSecond; i++)
+        {
+            for (int j = 0; j < colsInSecond; j++)
+            {
+                matrix2[i][j] = sc.nextInt();
+            }
+        }
+         
+            
+        System.out.println("Product = ");
+         
+        for (int i = 0; i < rowsInFirst; i++)
+        {
+            for (int j = 0; j < colsInSecond; j++)
+            {
+                for (int k = 0; k < colsInFirstRowsInSecond; k++)
+                {
+                    product[i][j] +=  matrix1[i][k] * matrix2[k][j];
+                }
+            }
+        }
+         
+        for (int i = 0; i < rowsInFirst; i++)
+        {
+            for (int j = 0; j < colsInSecond; j++)
+            {
+                System.out.print(product[i][j]+"\t");
+            }
+             
+            System.out.println();
+        }
+    }
+*********************************************************************************
+// Transpose of Matrix (Rows into col and col into rows)
+
+   public static void main(String[] args) 
+    {
+        Scanner sc = new Scanner(System.in);
+         
+        System.out.println("Enter The Number Of Rows");
+         
+        int rows = sc.nextInt();
+         
+        System.out.println("Enter The Number Of Columns");
+         
+        int cols = sc.nextInt();
+         
+        int[][] matrix = new int[rows][cols];
+     
+        int[][] transpose = new int[cols][rows];
+         
+        System.out.println("Enter The Data For Matrix :");
+         
+        for (int i = 0; i < rows; i++)
+        {
+            for (int j = 0; j < cols; j++)
+            {
+                matrix[i][j] = sc.nextInt();
+            }
+        }
+         
+
+        System.out.println("Transpose of Matrix is :");
+         
+        for (int i = 0; i < rows; i++)
+        {
+            for (int j = 0; j < cols; j++)
+            {
+                transpose[j][i] = matrix[i][j];  // Just need to change position of i and j 
+            }
+        }
+         
+        for (int i = 0; i < cols; i++)
+        {
+            for (int j = 0; j < rows; j++)
+            {
+                System.out.print(transpose[i][j]+"\t");
+            }
+             
+            System.out.println();
+        }
+
+
+**********************************************************************************************************************************************
+// find the closest number which nearest to power of 2 with given number 		
+		Scanner sc = new Scanner(System.in);
+		System.out.println("Enter number ");
+		int number = sc.nextInt();
+		int i = 0;
+		while (Math.pow(2, i) < number) {
+			
+			i++;
+		}
+		if ((number - (Math.pow(2, (i-1)))) > ((Math.pow(2, i))- number)){
+			System.out.println("closiest number "+ (Math.pow(2, i)));
+		}
+		else
+			System.out.println("closiest number "+ (Math.pow(2, i-1)));
+		}
+
+	}
+
+*****************************************************************************************************************************
+// Write a method which will remove any given character from a String?
+
+	public static void main(String[] args) {
+
+		Scanner sc = new Scanner(System.in);
+		System.out.println("Enter character to remove from string ");
+		String givenChar = sc.nextLine();
+		char[] CharToRemov = givenChar.toCharArray();
+
+		String a = "this is sachin";
+		char[] c = a.toCharArray();
+
+		for (int i = 0; i < c.length; i++) {
+			if (c[i] != (CharToRemov[0])) {
+					System.out.print(c[i]);
+			}
+		}
+	}
+
+**************************************************
+//How to find first non repeated character of a given String? (solution)
+	public static void main(String[] args) {
+		String a = "this is sachin";
+		char[] c = a.toCharArray();
+
+		List <Character > characterInSequence = new ArrayList<Character >();
+		
+		for (int i = 0; i < c.length-1; i++) {
+			for (int j =i+1; j <c.length; j++){
+				if (c[i]==c[j]){
+					characterInSequence.add(c[i]);
+					break;
+				}
+				
+			}
+		}
+		System.out.println(characterInSequence.get(0));
+
+	}
+**************************************************
+//Creating array of objects in java example program
+		* Array is collection of similar data types.
+		* Arrays can hold collection of data with indexes
+		
+						//Java example program to store string object in array
+							String a[]= new String[5];
+							a[0]="array of objects";
+							a[1]="object array in java";
+							a[2]="array of objects in java example program";
+							a[3]="array of objects in java tutorial";
+							a[4]="how to make array of objects in java";
+							
+							for (int i = 0; i < a.length; i++) {
+								System.out.println(a[i]);
+							}
+
+		/// Java example program to  create custom objects and store in array
+		public class Employee {
+ 			String name;
+			int id;
+					
+			Employee(String name, int id){
+				this.name=name;
+				this.id=id;
+			}
+			
+			Employee [] emparry = new Employee[3]();
+			emparry[0] = new Employee("sachin",3);
+			emparry[1] = new Employee("mohit",30);
+			emparry[2] = new Employee("vaibha",35);
+				for (Employee emp: emparry){ syso(emp.name ++ emp.ID}
+			}
+			
+**************************************************
+//: Guess the order of execution of constructors
+					public class ConstructorDemo {
+					 
+					ConstructorDemo(){
+							this(1);
+							System.out.println("Zero argument constructor");
+					}
+						
+					ConstructorDemo(int a){
+							this("Hi",1);
+							System.out.println("One argument constructor");
+					}
+					 
+					ConstructorDemo(String str, int x){
+						
+							System.out.println("Two argument constructor");
+					}
+					 
+					public static void main(String[] args) {
+					 
+							ConstructorDemo obj =new ConstructorDemo();
+					 
+						}
+						
+	--> Two argument constructor
+		One argument constructor
+		Zero argument constructor
+		
+##### Constructor overloading is very much possible. Above code is example of constructor overloading "ConstructorDemo"	is overloaded by different arguments.
+
+#####Can constructor perform other tasks instead of initialization?
+			Yes, like object creation, starting a thread, calling method etc. You can perform any operation in the constructor as you perform in the method.	
+#### Constructor can not overridden.			
+**************************************************
+// Convertion of string into HashMap		
+		String line = key.toString().substring(1, key.toString().length()-1); /// Convert into string 
+		String [] keyValuePair =line.split(",");   // Split with , 
+		
+		Map<String , Integer> GradeLoanAmt = new HashMap <String , Integer >();  // initialized Map 
+		for (int i=0; i < keyValuePair.length ; i++){
+			String [] a = keyValuePair[i].split("=");
+			
+			GradeLoanAmt.put(a[0].trim(), Integer.parseInt(a[1].trim()));
+		}
+		
+		
+/// Finding Key of hightest value in HashMap
+		
+		Integer maxLoan= Collections.max(GradeLoanAmt.values());  // find a highest value from HashMap
+		
+		for (Entry<String,Integer> entry : GradeLoanAmt.entrySet()){     // for loop to check all values from hashmap
+			
+				Integer Amt= entry.getValue();
+				
+			if (Amt!=null && Amt==maxLoan){
+				MaxEntry =entry;
+				}
+			}
+
+			
+//want to find the 90th date from today's date
+			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+			Calendar c = Calendar.getInstance();
+			c.setTime(new Date()); // Now use today date.
+			c.add(Calendar.DATE, 90); // Adding 5 days
+			String output = sdf.format(c.getTime());
+			System.out.println(output);
+			
+//Validate the a line contain all characters as of Char type 
+			String [] a = {"a","a","d"}; 
+			 Pattern regex = Pattern.compile("[^A-Za-z]");
+			 for (int i = 1; i < a.length; i++){
+			 Matcher m = regex.matcher(a[i]);
+				 
+				 System.out.println(a[i]);
+
+			
+///How to compare dates in Java
+		public static void main( String[] args ) 
+		   {
+			try{
+				
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+				Date date1 = sdf.parse("2009-12-31");
+				Date date2 = sdf.parse("2010-01-31");
+
+				System.out.println(sdf.format(date1));
+				System.out.println(sdf.format(date2));
+				
+				if(date1.compareTo(date2)>0){
+					System.out.println("Date1 is after Date2");
+				}else if(date1.compareTo(date2)<0){
+					System.out.println("Date1 is before Date2");
+				}else if(date1.compareTo(date2)==0){
+					System.out.println("Date1 is equal to Date2");
+				}else{
+					System.out.println("How to get here?");
+				}
+				
+//this keyword:-
+				public class ThisDemo {
+						int a;
+						int b;						
+					ThisDemo(int a, int b){					 
+						a=a;
+						b=b;							
+					}					 
+					public static void main(String[] args) {							
+						ThisDemo obj = new ThisDemo(10, 20);							
+						 System.out.println(obj.a);
+						 System.out.println(obj.b);
+					}
+				O/P ----------> 0 , 0
+	
+		public class ThisDemo {
+					int a;
+					int b;					
+					ThisDemo(int a, int b){				 
+						this.a=a;
+						this.b=b;							
+				}				 
+		public static void main(String[] args) {						
+					ThisDemo obj = new ThisDemo(10, 20);						
+					 System.out.println(obj.a);
+					 System.out.println(obj.b);
+				}
+		O/P ----------> 10 , 20
+		
+
+	public class ThisDemo {
+					int x, y;
+					ThisDemo() {
+						System.out.println("Zeo argument constructor called");
+					}
+					ThisDemo(int x, int y) {
+						this(); // calling a method ThisDemo -->
+								// System.out.println("Zeo argument constructor called");
+						System.out.println("Two agrument constrcutero is called");
+						this.x = x;
+						this.y = y;
+					}
+					public static void main(String[] args) {
+						ThisDemo o = new ThisDemo(1, 2);
+						System.out.println("x " + o.x);
+						System.out.println("y " + o.y);
+					}
+		O/P ----------> Zeo argument constructor called
+						Two agrument constrcutero is called
+						x 1
+						y 2
+
+			
+		#	Can we call non static method from constructor using this?		
+					public class B{
+							B(){
+								syso ("B class constructor");
+								this.show();
+							}
+							void show (){
+								syso(""method");
+							}
+
+							public static void main(String[] args){
+							 B obj = new B();
+							}
+			O/P ----------> B class Constructor
+							method
+
+
+		#	Can we assign something to this ?
+					public class ThisDemo {
+								int a,b;
+							 ThisDemo(int x, int y){
+								   this= new ThisDemo();
+									System.out.println("Two argument constructor called.");
+									this.x=x;
+									this.y=y;
+							}
+							public static void main(String[] args) {       
+								ThisDemo obj = new ThisDemo(10, 20);
+								 System.out.println(obj.a);
+								 System.out.println(obj.b);
+							}
+			O/P ----------> Compile Time Error 
+			
+		#	: Can we use this as return statement in a method?
+					public class B{
+						   int a;
+						 public int getA() {
+								return a;
+						 }
+						public void setA(int a) {
+								this.a = a;
+						}
+						B show(){
+							return this;
+						}
+						public static void main(String[] args) {      
+						 B obj = new B();
+						  obj.setA(10);
+						 System.out.println(obj.getA());
+						 B obj2= obj.show();
+						 System.out.println(obj2.getA());
+						}
+			O/P ----------> 10 , 10
+
+			
+	#	Super call must be first statement inside the sub class constructor otherwise compile time error will come.
+						public class Sub extends Super{
+							Sub(){
+								syso;
+								super();// Constructor must call 1st statment in constructor 
+							}
+				
+				
+
+//program to restrict a class from creating not more than three objects
+			public class RestrictObjectCreation{
+				private static RestrictObjectCreationobject;
+					public static int objCount = 0;
+					private RestrictObjectCreation()
+				{
+					 System.out.println("Singleton(): Private constructor invoked");
+					objCount  ++;
+				}
+				public static RestrictObjectCreation getInstance()
+				{
+					if (objCount < 3)
+					{
+					object = new RestrictObjectCreation();
+					}
+				return object;
+			}
+ 		public class Test{  // calling class
+			public static void main(String args[]) { 
+			RestrictObjectCreation obj1= RestrictObjectCreation.getInstance();
+			RestrictObjectCreation obj2= RestrictObjectCreation.getInstance();
+			RestrictObjectCreation obj3= RestrictObjectCreation.getInstance();
+			RestrictObjectCreation obj4= RestrictObjectCreation.getInstance();		
+		
+		
+		
+		
+**************************************************
+
+
+*********************************Theory ***************************************************************
+-------------------------------------------------------------------------------------------------------
+//8 different ways to convert int to String in java
+		1.Convert Integer to String using Integer.toString() method: 
+		2.Convert Integer to String using String.valueOf() method.
+		3.Convert Integer to String / int to String using new Integer(int).toString() 
+		4.Convert Integer to String / int to String using String.format() method 
+		5.Convert Integer to String / int to String using DecimalFormat 
+		6.Convert Integer to String/ int to String using StringBuffer / StringBuilder 
+		7.Convert Integer to String / int to String directly by adding to "" 
+		
+
+		
+//Exception handling in method overriding in java
+		* When super class method does not have any throws exception then we can add throws un checked exception in subclass overridden method.
+		* When super class method does not have any throws exception then we can not add throws checked exception in subclass overridden method.
+		* When super class method  throws checked exception then we can add throws  checked exception in subclass overridden method.
+		* When super class method  throws unchecked exception then we can not add throws  checked exception in subclass overridden method
+		* When super class method  throws checked exception then we can not add throws its  parent exception in subclass overridden method.
+				
+				public class Super {
+						public void show() throws FileNotFoundException{   
+												------------------------
+						System.out.println("Super class show() method");
+					}
+				public class Sub extends Super {   
+					public void show() throws IOException{
+											  ------------
+						System.out.println("Sub class show() method");
+					}
+					public static void main(String[] args) {
+						Sub obj = new Sub();
+						obj.show();
+					}
+					
+
+// what will happen if we try to print null using system.out.println ie. System.out.println(null); ----> Compile time error will come;
+//Can we create object for abstract class in same class ----> Compile time error will come
+ /what will be the output of below java program --> 2
+			int x= 10;
+			y= x-- - --x;
+			syso (y);
+
+increamental oparetor is applicable to veriable  not to number 
+		int x , int y 
+		y = ++(++x)  /// after appling ++x it became constain number hence complication error 
+		
+increamental oparetor is applicable to all except boolean
+		int x , y 		| char a , b	| double aa , bb
+		y =x++			|  b= a++		|	bb= ++aa
+		
+			
+***** == is for referance / address comparision.  And equal() is for contain comparision
+			temp r1 = new temp()  // r1 is object 
+			temp r2 = new temp()
+				if(r1=r2)
+	if r1 == r2 returns true Hence both r1,r2 is refering to same address 
+
+	
+	
+	
+	
+String concatention oparetor (+) :-
+		String a , b , c, d 
+		syso(a+b+c+d)
+			
+	
+	
+//What will happen if our class constructor having super() call but our class not extending any class.
+					public Class Sample{ 
+							Sample(){
+							super();
+							System.out.println("Sample class constructor called "); 							 
+							}
+							 
+					public static void main (String args[]) {
+							 Sample obj= new Sample();							 
+							}
+		O/P ------> Sample class constructor called
+		
+		* if our class not extending any class Yes still we can use super(); call in our class Because in java every class will extend Object class by default this will be added by JVM. 
+		* But make sure we are using only super(); default call we can not place parameterized super call because Object class does not have any parameterized constructor.
+		 
+/// print message without using System.out.println()
+		-->System.out.write("www.instanceofjava.com \n".getBytes());
+			System.out.format("%s", "www.instanceofjava.com \n")
+			PrintStream myout =  new PrintStream(new FileOutputStream(FileDescriptor.out));
+		    myout.print("www.instanceofjava.com \n");
+			System.err.print("This is custom error message");
+			System.console().writer().println("Hai");
+
+			
+//3. Can we call methods using this keyword?
+			Yes we can use this keyword to call current class non static methods .
+		 
+		 
+		 
+//difference between navigableSet, SortedSet and TreeSet in Java?
+
+			SortedSet is an interface (it defines the functionality) and Treeset is an implementation. NavigableSet is also an interface subtype of the SortedSet.
+
+			You can't just write SortedSet<Integer> example = new SortedSet<Integer>();
+
+			You can however write SortedSet<Integer> example = new TreeSet<Integer>();
+
+			As its name implies, NavigableSets are more useful for navigating through the set.
+
+			http://mrbool.com/overview-on-navigableset-subtype-of-java-collections/25417 offers a good tutorial on NavigableSets and some of the methods available when using one, that aren't available in a SortedSet.
+
+## Outer class is only be Public / Absratct/ final.   Private and protected is not allowed. Since private class is not accessible from outside It has not use.
+
+
+		 
+//REFLECTION :-
+			through reflection u can 
+			
+			public class excution {
+
+					private String empoyeeName ;
+					private String empoyeeID;
+					private int EMPSal;
+					
+			// Create constructor 
+					public excution(String empoyeeName, String empoyeeID, int eMPSal) {
+						super();
+						this.empoyeeName = empoyeeName;
+						this.empoyeeID = empoyeeID;
+						EMPSal = eMPSal;
+					}
+					
+			// Create Getter and setter method for the private veeribale 		
+					public String getEmpoyeeName() {
+						return empoyeeName;
+					}
+				
+					public void setEmpoyeeName(String empoyeeName) {
+						this.empoyeeName = empoyeeName;
+					}
+					private String getEmpoyeeID() {
+						return empoyeeID;
+					}
+					public void setEmpoyeeID(String empoyeeID) {
+						this.empoyeeID = empoyeeID;
+					}
+					public int getEMPSal() {
+						return EMPSal;
+					}
+					public void setEMPSal(int eMPSal) {
+						EMPSal = eMPSal;
+					}
+					
+			}
+///Accessing all the methods / veribles including private from other class using reflection concepts 
+package Practices;
+
+				import org.apache.xmlbeans.impl.jam.internal.reflect.ReflectClassBuilder;
+				import com.google.common.reflect.Reflection;
+
+				public class ReflectionExcution {
+					public static void main(String[] args) throws ClassNotFoundException {
+
+						Class aa = Class.forName("Practices.excution");
+						System.out.println(aa.getName()+"--");
+						Constructor[] con = aa.getConstructors();
+
+						for (Constructor ram : con) {
+							System.out.println(ram);
+						}
+
+						Method[] ShreeRam = aa.getDeclaredMethods();
+						for (Method Ramnam : ShreeRam) {
+							System.out.println(Ramnam);
+						}
+
+						Field[] fiel = aa.getDeclaredFields();
+
+						for (Field SaiRam : fiel) {
+							System.out.println(SaiRam);
+						}
+
+						System.out.println(aa.getClass().getName()+"---");
+					}
+				}
+
+******************************************************************
+		 
+		 
+		 
+		 
+http://javaconceptoftheday.com/most-asked-java-interview-programs-with-solutions/
+http://www.sanfoundry.com/java-programming-examples-numerical-problems-algorithms/
+http://www.freejavaguide.com/javasource2.htm
+
+
+. Search for a specific value in an array.
+2. Compare if two arrays have the same content (in the same order)
+3. Compare if two arrays have the same content (doesn't matter if they aren't in order)
+4. Try to do a program that constantly prompts the user to enter something (not GUI, but using the Scanner class) until the user enters a specific word (such as quit for example)
+
+5. How To Find First Repeated And Non-Repeated Character In A String?
+
+
+
+
+
+
+
+

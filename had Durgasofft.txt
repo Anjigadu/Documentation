@@ -1,0 +1,1334 @@
+		XML file processing in Hadoop :--->  https://undercloud.org/2012/02/20/xml-input-files-for-a-mapreduce-application/
+
+		
+What is MapReduce?
+It is a framework or a programming model that is used for processing large data sets over clusters of computers using distributed programming.
+
+
+What are ‘maps’ and ‘reduces’?
+	‘Maps‘ and ‘Reduces‘ are two phases of solving a query in HDFS. ‘Map’ is responsible to read data from input location, and based on the input type, it will generate a key value pair, that is, an intermediate output in local machine. ’Reducer’ is responsible to process the intermediate output received from the mapper and generate the final output.
+
+
+
+
+What is the difference between partitioning and Buckets (or Clusters) a table in Hive ?
+	Partitioning helps in elimination of data, if used in WHERE clause, where as bucketing helps in organizing data in each partition into multiple files, so as same set of data is always written in same bucket. Helps a lot in joining of columns.
+
+	Suppose, you have a table with five columns, name, server_date, some_col3, some_col4 and some_col5. Suppose, you have partitioned the table on server_date and bucketed on name column in 10 buckets, your file structure will look something like below.
+
+	server_date=xyz
+	00000_0
+	00001_0
+	00002_0
+	........
+	00010_0
+	Here server_date=xyz is the partition and 000 files are the buckets in each partition. Buckets are calculated based on some hash functions, so rows with name=Sandy will always go in same bucket
+
+
+	Partition divides large amount of data into multiple slices based on value of a table column(s).
+	Bucketing decomposes data into more manageable or equal parts.
+	The table divide into number of partitions is called Hive Partition, The Hive Partition can be further subdivided into Clusters or Buckets
+
+
+
+
+What is Hive Metastore ?
+
+	Hive Meta store is a database that stores metadata of your hive tables like table name,column name,data types,table location,number of buckets in the table etc.
+
+
+What is WebHCatServer ?
+	The WebHcatServer provides a REST – like web API for Hcatalog. Applications make HTTP requests to run Pig, Hive, and HCatalog DDL from within applications.
+
+
+
+Is it possible to use same metastore by multiple users, in case of embedded hive?
+	No, it is not possible to use metastore in sharing mode. It is recommended to use standalone “real” database like MySQL or PostGresSQL.
+
+
+When hive is not suitable?
+	It doesn’t provide OLTP transactions supports only OLAP transactions.  If application required OLTP, switch to NoSQL databases.  HQL queries have higher latency, due to the mapreduce.
+
+Why I choose Hive instead of MapReduce?
+	There are Partitions to simplify the data process, Bucketing for sampling the data, sort the data quickly, and simplify the mapreduce process. Partitions and Buckets can segmenting large data sets to improve Query performance in Hive
+
+
+
+What is the importance of Vectorization in Hive?
+	It’s a query optimization technique. Instead of processing multiple rows, Vectorization allows to process process a batch of rows as a unit. Consequently it can optimize query performance. The file must be stored in ORC format to enable this Vectorization. It’s disabled by default, but enable this property by run this command.
+					set hive.vectorized.execution.enabled=true;
+
+Difference between sort by and  order by clause in Hive? Which is the fast?
+	ORDER BY – sort the data in one reducer. Sort by much faster than order by.
+	SORT BY – sort the data within each reducer. You can use n number of reducers for sort.
+
+
+
+Wherever you run hive query, first it creates new metastore_db, why? What is the importance of Metastore_db?
+	When we run the hive query, first it creates a local metastore, before creates the metastore first Hive checks whether metastore is already exists or not? If presents shows error, else the process goes on. This configuration is set in hive-site.xml like this.
+
+			<property>
+			<name>javax.jdo.option.ConnectionURL</name>
+			<value>jdbc:derby:;databaseName=metastore_db;create=true</value>
+			<description>JDBC connect string for a JDBC metastore</description>
+			</property>
+
+
+Tell me different Hive metastore configuration.
+1) Embedded metastore
+2) Local metastore
+3) Remote metastore.
+
+
+
+What Is the HWI?
+	The Hive Web Interface is an alternative to the command line interface. HWI is a simple graphical interface, It’s hive web interface. The HWI allows start at database level directly. you can get all SerDe, column names and types and simplifies the hive steps. It’s seccession based interface, so you can run multiple hive queries simultaneously. There is no local metastore mode in HWI.
+
+What is the difference between Like and Rlike operators in HIVE?
+	Like: used to find the substrings within a main string with regular expression %.
+	Rlike is a special function which also finds the sub strings within a main string, but return true or false without using regular expression.
+
+Ex  Tablename is table, column is name.
+	name=VenuKatragadda, venkatesh, venkateswarlu
+	Select * from table where name like “venu%. //VenuKatragadda.
+	select * from table where name rlike “venk%”. // false, true, true.
+
+What are the Hive default read and write classes?
+	Hive use 2+2 classes to read and write the files.
+	1)TextInputFormat/HiveIgnoreKeyTextOutputFormat.
+	2) SequenceFileInputFormat/SequenceFileOutputFormat:
+	First class used to read/write the plain text. Second class used for sequence files.
+
+What is Query processor in Hive?
+	It’s a core processing unit in Hive framework, it converting SQL to map/reduce jobs and run in the other dependencies. As a result hive can convert the Hive queries into Hive queries.
+
+
+
+What are Views in Hive?
+	Based on user requirement create and manage view. You can set data as view. It’s a logical construct. It’s used where query is more complicated and to hide complexity of query and make easy to the users.
+	Ex. Create view table_name as select * from employee where salary>10000;
+
+
+
+What is Thrift server & client, JDBC and ODBC driver importance in Hive?
+	Thrift is a cross language RPC framework which generate code and cobines a software stack finally execute the Thrift code in remote server. Thrift compiler acts as interpreter between server and client. Thrift server allows a remove client to submit request to Hive, using different programming languages like Python, Ruby and scala.
+	JDBC driver : is a software component enabling a Java application to interact with a database.
+	ODBC driver : ODBC accomplishes DBMS independence by using an ODBC driver as a translation layer between the application and the DBMS
+
+How Hive Serialize and DeSerialize the data?
+
+		In Hive language, SerDe also called Serialization and DeSerialization. Usually when read/write the data, user first communicate with inputformat, then it connect with Record reader to read/write record. The data is stored in Serialized (binary) format in Record. To serialize the data goes to row, here deserialized custem serde use object inspector to deserialize the data in fields. now user see the data in the fields, that deliver to the end user.
+
+
+
+How Hive use Java in SerDe?
+	To insert data into table, Hive create an object by using Java. To transfer java objects over network, the data should be serialized. Each field serialized by using Object inspector and finally serialized data stored in Hive table.
+
+
+
+what are the file formate 
+	textinputformat
+	keyvaluesinput formate
+	sequencefileinputformat
+
+
+How many ways you can run Hive?
+ In CLI mode (By using command line inerface).
+ By using JDBC or ODBC.
+ By Called Hive Thift client. It allows java, PHP, Python, Ruby and C++ to write commands to run in Hive.
+
+
+ How Hive Organize the data?
+	Hive organize in three ways such as Tables, Partitions and Buckets. Tables organize based on Arrays, Maps, primitive column types. Partitions has one or more partition keys based on project requirements.
+	Buckets used for analyze the data for sampling purpose. It’s good approach to process a pinch of data in the form of buckets instead of process all data.
+
+
+   
+   When we are use explode in Hive?
+			Sometime Hadoop developer takes array as input and convert into a separate table row. To achieve this goal, Hive use explode, it acts as interpreter to convert complex data-types into desired table formats.
+
+			SELECT explode (arrayName) AS newCol FROM TableName;
+			SELECT explode(map) AS newCol1, NewCol2 From TableName;
+
+
+What is ObjectInspector functionality in Hive?
+	Hive uses ObjectInspector to analyze the internal structure of the rows, columns and complex objects. . Additionally gives us ways to access the internal fields inside the object. It not only process common data-types like int, bigint, STRING, but also process complex data-types like arrays, maps, structs and union.
+
+
+How to display the present database name in the terminal?
+There are two ways to know the current database. One temporary in cli and second one is persistently.
+1) in CLI just enter this command:   set hive.cli.print.current.db=true;
+2) In hive-site.xml paste this code:  
+			    <property>
+					<name>hive.cli.print.current.db</name>
+					<value>true</value>
+					</property>
+				In second scenario, you can automatically display the Hive database name when you open terminal.
+
+
+
+
+========================***************************************======================
+How to restart Namenode?
+		Step-1. Click on stop-all.sh and then click on start-all.sh
+What does /etc /init.d do?What if a Namenode has no data?
+	/etc /init.d specifies where daemons (services) are placed or to see the status of these daemons. It is very LINUX specific, and nothing to do with Hadoop.
+
+Name node has no data ?
+	It cannot be part of the Hadoop cluster.
+What happens to job tracker when Namenode is down?	
+	When Namenode is down, your cluster is OFF, this is because Namenode is the single point of failure in HDFS.
+
+What are the four characteristics of Big Data?
+	Volume − Facebook generating 500+ terabytes of data per day.
+	Velocity − Analyzing 2 million records each day to identify the reason for losses.
+	Variety − images, audio, video, sensor data, log files, etc.  Veracity: biases, noise and abnormality in data
+
+Since the data is replicated thrice in HDFS, does it mean that any calculation done on one node will also be replicated on the other two?
+	No, calculations will be done only on the original data. The master node will know which node exactly has that particular data. In case, if one of the nodes is not responding, it is assumed to be failed. Only then, the required calculation will be done on the second replica.
+
+Why ‘Reading‘ is done in parallel and ‘Writing‘ is not in HDFS?
+	Through mapreduce program, the file can be read by splitting its blocks when reading. But while writing as the incoming values are not yet known to the system mapreduce cannot be applied and no parallel writing is possible.
+
+
+Is there a hdfs command to see available free space in hdfs	
+		hadoop dfsadmin -report
+
+
+How to make a large cluster smaller by taking out some of the nodes?
+	Hadoop offers the decommission feature to retire a set of existing data-nodes. The nodes to be retired should be included into the exclude file, and the exclude file name should be specified as a configuration parameter dfs.hosts.exclude.
+	Consider case scenario: In M/R system, - HDFS block size is 64 MB
+	- Input format is FileInputFormat
+	– We have 3 files of size 64K, 65Mb and 127Mb
+
+
+How many input splits will be made by Hadoop framework?
+Hadoop will make 5 splits as follows −
+•	- 1 split for 64K files
+•	- 2 splits for 65MB files
+•	- 2 splits for 127MB files
+
+
+Why is Checkpointing Important in Hadoop?
+		As more and more files are added the namenode creates large edit logs. Which can substantially delay NameNode startup as the NameNode reapplies all the edits. Checkpointing is a process that takes an fsimage and edit log and compacts them into a new fsimage. This way, instead of replaying a potentially unbounded edit log, the NameNode can load the final in-memory state directly from the fsimage. This is a far more efficient operation and reduces NameNode startup time
+
+
+
+
+
+What are active and passive “Namenodes”?
+	In Hadoop-2.x, we have two Namenodes – Active “Namenode” and Passive “Namenode”. Active “Namenode” is the “Namenode” which works and runs in the cluster. Passive “Namenode” is a standby “Namenode”, which has similar data as active “Namenode”. When the active “Namenode” fails
+
+
+Why do we sometimes get a “file could only be replicated to 0 nodes, instead of 1” error?
+	This happens because the “Namenode” does not have any available DataNodes.
+
+How does one switch off the “SAFEMODE” in HDFS?
+	You use the command: hadoop dfsadmin –safemode leave
+
+
+What are the features of a “Fully Distributed” mode?
+	“Fully Distributed” mode is used in the production environment, where we have ‘n’ number of machines forming a Hadoop cluster. Hadoop daemons run on a cluster of machines. There is one host on which “Namenode” runs and another host on which “Datanode” runs, and then there are machines on which “TaskTracker/NodeManager” runs. We have separate masters and slaves in this sort of a distribution.
+
+	1. Standalone Mode: Default mode of Hadoop, it uses local file stystem for input and output operations. This mode is mainly used for debugging purpose, and it does not support the use of HDFS. Further, in this mode, there is no custom configuration required for mapred-site.xml, core-site.xml, hdfs-site.xml files. Much faster when compared to other modes.
+	2. Pseudo-Distributed Mode (Single Node Cluster): In this case, you need configuration for all the three files mentioned above. In this case, all daemons are running on one node and thus, both Master and Slave node are the same.
+
+
+
+
+
+What is the role of “ZooKeeper” in a Hadoop cluster?
+The purpose of “ZooKeeper” is cluster management. “ZooKeeper” will help you achieve coordination between Hadoop nodes. “ZooKeeper” also helps to:
+
+	•	Manage configuration across nodes
+	•	Implement reliable messaging
+	•	Implement redundant services
+	•	Synchronize process execution
+
+
+
+
+What are the main configuration parameters in a “MapReduce” program?
+Users of the “MapReduce” framework need to specify these parameters:
+
+	•	Job’s input locations in the distributed file system
+	•	Job’s output location in the distributed file system
+	•	Input format
+	•	Output format
+	•	Class containing the “map” function
+	•	Class containing the “reduce” function
+
+
+ State the reason why we can’t perform “aggregation” (addition) in a mapper? Why do we need the “reducer” for this?
+	We cannot perform “aggregation” (addition) in a mapper because sorting does not occur in the “mapper”. Sorting occurs only on the reducer side. The “Mapper” method initialization depends on each input split. During “aggregation”, we will lose the value of the previous instance. For each row, a new “mapper” will get initialized. For each row, “input split” again gets divided into the “mapper”. Hence, we cannot have a track of the previous row value
+
+
+
+How JobTracker schedules a task?
+	The TaskTrackers send out heartbeat messages to the JobTracker, usually every few minutes, to reassure the JobTracker that it is still alive. These message also inform the JobTracker of the number of available slots, so the JobTracker can stay up to date with where in the cluster work can be delegated. When the JobTracker tries to find somewhere to schedule a task within the MapReduce operations, it first looks for an empty slot on the same server that hosts the DataNode containing the data, and if not, it looks for an empty slot on a machine in the same rack.
+
+
+
+What is a Task Tracker in Hadoop? How many instances of TaskTracker run on a Hadoop Cluster
+	A TaskTracker is a slave node daemon in the cluster that accepts tasks (Map, Reduce and Shuffle operations) from a JobTracker. There is only One Task Tracker process run on any hadoop slave node. Task Tracker runs on its own JVM process. Every TaskTracker is configured with a set of slots, these indicate the number of tasks that it can accept. The TaskTracker starts a separate JVM processes to do the actual work (called as Task Instance) this is to ensure that process failure does not take down the task tracker. The TaskTracker monitors these task instances, capturing the output and exit codes. When the Task instances finish, successfully or not, the task tracker notifies the 	JobTracker. The TaskTrackers also send out heartbeat messages to the JobTracker, usually every few minutes, to reassure the JobTracker that it is still alive. These message also inform the JobTracker of the number of available slots, so the JobTracker can stay up to date with where in the cluster work can be delegated.
+
+
+
+What is a Task instance in Hadoop? Where does it run?
+	Task instances are the actual MapReduce jobs which are run on each slave node. The TaskTracker starts a separate JVM processes to do the actual work (called as Task Instance) this is to ensure that process failure does not take down the task tracker. Each Task Instance runs on its own JVM process. There can be multiple processes of task instance running on a slave node. This is based on the number of slots configured on task tracker. By default a new task instance JVM process is spawned for a task.
+
+
+How many Daemon processes run on a Hadoop system?
+	Hadoop is comprised of five separate daemons. Each of these daemon run in its own JVM. Following 3 Daemons run on Master nodes 
+	NameNode - This daemon stores and maintains the metadata for HDFS. 
+	Secondary NameNode - Performs housekeeping functions for the NameNode. 
+	JobTracker - Manages MapReduce jobs, distributes individual tasks to machines running the Task Tracker. 
+	Following 2 Daemons run on each Slave nodes
+	 DataNode – Stores actual HDFS data blocks. 
+	TaskTracker - Responsible for instantiating and monitoring individual Map and Reduce tasks.
+
+
+What is configuration of a typical slave node on Hadoop cluster? How many JVMs run on a slave node?
+	•	Single instance of a Task Tracker is run on each Slave node. Task tracker is run as a separate JVM process.
+	•	Single instance of a DataNode daemon is run on each Slave node. DataNode daemon is run as a separate JVM process.
+	•	One or Multiple instances of Task Instance is run on each slave node. Each task instance is run as a separate JVM process. The number of Task instances can be controlled by configuration. Typically a high end machine is configured to run more task instances.
+
+
+
+Can I set the number of reducers to zero?
+	Yes, Setting the number of reducers to zero is a valid configuration in Hadoop. When you set the reducers to zero no reducers will be executed, and the output of each mapper will be stored to a separate file on HDFS. [This is different from the condition when reducers are set to a number greater than zero and the Mappers output (intermediate data) is written to the Local file system(NOT HDFS) of each mappter slave node.]
+	
+	
+ Where is the Mapper Output (intermediate kay-value data) stored ?
+	The mapper output (intermediate data) is stored on the Local file system (NOT HDFS) of each individual mapper nodes. This is typically a temporary directory location which can be setup in config by the hadoop administrator. The intermediate data is cleaned up after the Hadoop Job completes.
+
+
+
+What is Writable & WritableComparable interface?
+	•	org.apache.hadoop.io.Writable is a Java interface. Any key or value type in the Hadoop Map-Reduce framework implements this interface. Implementations typically implement a static read(DataInput) method which constructs a new instance, calls readFields(DataInput) and returns the instance.
+	•	org.apache.hadoop.io.WritableComparable is a Java interface. Any type which is to be used as a key in the Hadoop Map-Reduce framework should implement this interface. WritableComparable objects can be compared to each other using Comparators.
+
+What is the Hadoop MapReduce API contract for a key and value Class?
+	•	The Key must implement the org.apache.hadoop.io.WritableComparable interface.
+	•	The value must implement the org.apache.hadoop.io.Writable interface.
+
+What is a IdentityMapper and IdentityReducer in MapReduce ?
+	•	org.apache.hadoop.mapred.lib.IdentityMapper Implements the identity function, mapping inputs directly to outputs. If MapReduce programmer do not set the Mapper Class using JobConf.setMapperClass then IdentityMapper.class is used as a default value.
+•	
+	•	org.apache.hadoop.mapred.lib.IdentityReducer Performs no reduction, writing all input values directly to the output. If MapReduce programmer do not set the Reducer Class using JobConf.setReducerClass then IdentityReducer.class is used as a default value.
+
+
+
+When is the reducers are started in a MapReduce job?
+	In a MapReduce job reducers do not start executing the reduce method until the all Map jobs have completed. Reducers start copying intermediate key-value pairs from the mappers as soon as they are available. The programmer defined reduce method is called only after all the mappers have finished.
+
+
+If reducers do not start before all mappers finish then why does the progress on MapReduce job shows something like Map(50%) Reduce(10%)? Why reducers progress percentage is displayed when mapper is not finished yet?
+	Reducers start copying intermediate key-value pairs from the mappers as soon as they are available. The progress calculation also takes in account the processing of data transfer which is done by reduce process, therefore the reduce progress starts showing up as soon as any intermediate key-value pair for a mapper is available to be transferred to reducer. Though the reducer progress is updated still the programmer defined reduce method is called only after all the mappers have finished.
+
+
+
+
+What are the four basic parameters of a mapper?
+	The four basic parameters of a mapper are LongWritable, text, text and IntWritable. The first two represent input parameters and the second two represent intermediate output parameters.
+
+
+What are the four basic parameters of a reducer?
+	The four basic parameters of a reducer are text, IntWritable, text, IntWritable. The first two represent intermediate output parameters and the second two represent final output parameters.
+
+
+What do the master class and the output class do?
+	Master is defined to update the Master or the job tracker and the output class is defined to write data onto the output location.
+
+
+Is it mandatory to set input and output type/format in MapReduce?
+	No, it is not mandatory to set the input and output type/format in MapReduce. By default, the cluster takes the input and the output type as ‘text’.
+
+
+What does the text input format do?
+	In text input format, each line will create a line object, that is an hexa-decimal number. Key is considered as a line object and value is considered as a whole line text. This is how the data gets processed by a mapper. The mapper will receive the ‘key’ as a ‘LongWritable‘ parameter and value as a ‘text‘ parameter.
+
+What do sorting and shuffling do?
+	Sorting and shuffling are responsible for creating a unique key and a list of values. Making similar keys at one location is known as Sorting. And the process by which the intermediate output of the mapper is sorted and sent across to the reducers is known as Shuffling.
+
+What does a split do?
+	Before transferring the data from hard disk location to map method, there is a phase or method called  the ‘Split Method‘. Split method pulls a block of data from HDFS to the framework. The Split class does not write anything, but reads data from the block and pass it to the mapper. Be default, Split is taken care by the framework. Split method is equal to the block size and is used to divide block into bunch of splits.
+
+How can we change the split size if our commodity hardware has less storage space?
+	If our commodity hardware has less storage space, we can change the split size by writing the ‘custom splitter‘. There is a feature of customization in Hadoop which can be called from the main method.
+
+
+Why we cannot do aggregation (addition) in a mapper? Why we require reducer for that?
+	We cannot do aggregation (addition) in a mapper because, sorting is not done in a mapper. Sorting happens only on the reducer side. Mapper method initialization depends upon each input split. While doing aggregation, we will lose the value of the previous instance. For each row, a new mapper will get initialized. For each row, input split again gets divided into mapper,  thus we do not have a track of the previous row value.
+
+
+What is Streaming?
+	Streaming is a feature with Hadoop framework that allows us to do programming using MapReduce in any programming language which can accept standard input and can produce standard output. It could be Perl, Python, Ruby and not necessarily be Java. However, customization in MapReduce can only be done using Java and not any other programming language.
+
+
+
+If a data Node is full how it’s identified?
+	When data is stored in datanode, then the metadata of that data will be stored in the Namenode. So Namenode will identify if the data node is full.
+
+
+Are job tracker and task trackers present in separate machines?
+	Yes, job tracker and task tracker are present in different machines. The reason is job tracker is a single point of failure for the Hadoop MapReduce service. If it goes down, all running jobs are halted.
+
+
+
+What is the communication channel between client and namenode/datanode?
+   
+
+What is the difference between MapReduce engine and HDFS cluster?
+	HDFS cluster is the name given to the whole configuration of master and slaves where data is stored. Map Reduce Engine is the programming module which is used to retrieve and analyze data.
+
+
+Why are the number of splits equal to the number of maps?
+	The number of maps is equal to the number of input splits because we want the key and value pairs of all the input splits.
+
+
+
+Which are the two types of ‘writes’ in HDFS?
+	There are two types of writes in HDFS: posted and non-posted write. Posted Write is when we write it and forget about it, without worrying about the acknowledgement. It is similar to our traditional Indian post. In a Non-posted Write, we wait for the acknowledgement. It is similar to the today’s courier services. Naturally, non-posted write is more expensive than the posted write. It is much more expensive, though both writes are asynchronous.
+
+
+Explain what is WebDAV in Hadoop?
+	To support editing and updating files WebDAV is a set of extensions to HTTP.  On most operating system WebDAV shares can be mounted as filesystems , so it is possible to access HDFS as a standard filesystem by exposing HDFS over WebDAV.
+
+
+
+) Explain what is a sequence file in Hadoop?
+	To store binary key/value pairs, sequence file is used. Unlike regular compressed file, sequence file support splitting even when the data inside the file is compressed.
+
+
+49) Explain how is data partitioned before it is sent to the reducer if no custom partitioner is defined in Hadoop?
+If no custom partitioner is defined in Hadoop, then a default partitioner computes a hash value for the key and assigns the partition based on the result.
+
+
+50) Explain what happens when Hadoop spawned 50 tasks for a job and one of the task failed?
+It will restart the task again on some other TaskTracker if the task fails more than the defined limit.
+
+
+51) Mention what is the best way to copy files between HDFS clusters?
+The best way to copy files between HDFS clusters is by using multiple nodes and the distcp command, so the workload is shared.
+
+
+		
+		
+		
+		
+What do you understand by a straggler(a person/animal that is last in a group or the last to get to or leave a place) in the context of MapReduce?
+		speculative execution	
+
+Which object will you use to track the progress of a job?
+	JobClient is the primary interface for the user-job to interact with the cluster. JobClient provides facilities to submit jobs, track their progress, access component-tasks' reports/logs, get the Map-Reduce cluster status information etc.
+	
+ How do reducers communicate with each other?
+		Nope, MapReduce programming model does not allow reducers to communicate with each other. Reducers run in isolation.
+		
+		Mappers don't communicate with each other. This was done intentionally to make sure that reliability of each map task is governed solely by the reliability of the machine where that map task is running
+
+
+How can you backup file system metadata in Hadoop?
+		The fsimage file contains a serialised form of the filesystem metadata (file names, permissions, owner etc) and the edits file contains a log of all file system changes (i.e. file or directory create operations, permission changes etc).
+
+		The fsimage is stored on disk and in memory but when changes are made to HDFS these are reflected in the in-memory version of fsimage and the edits log but not on the fsimage stored on disk (although it is periodically updated through a checkpoint process and on NameNode start up
+		
+		
+		
+How will you protect the data at rest?
+	Encryption keys can be created on the fly, and destroyed when the message-sending process is completed. But "data at rest" is inherently persistent, and any encryption keys used to protect it must also be persistent. 
+
+	encryption offers no protection against unauthorized use of data by insiders, who have access to the keys
+	One such alternative is Data Masking. In this technique, sensitive components of data - such as account numbers or personal identifiers - are replaced by harmless data (such as a row of # symbols). With Data Masking in place, information can manipulated without risk of compromising sensitive information		
+		
+There is a huge file that cannot fit into the memory, you have to calculate the number of unique words present in the file. Assume that you have more than one system available and the problem can be distributed.
+
+How does Facebook handle single point of failure problem?
+	 single point of failure (SPOF) is a part of a system that, if it fails, will stop the entire system from working. Used Standby Node Facebook appears to use AvatarNode specifically for quickly switching between primary and secondary NameNodes
+	 
+Do you know about the AvatarNode implementation at Facebook?
+	Facebook appears to use AvatarNode specifically for quickly switching between primary and secondary NameNodes
+	
+	
+9. What hadoop -put command do exactly --> copyFromLocal 
+10. What is the limit on Distributed cache size?  
+		-> 10GB And if want more than that need to configured in mapred-site.xml file as component local.cache.size
+
+11. Handling skewed data
+12. What are the Different joins in hive?
+	JOIN
+	LEFT OUTER JOIN
+	RIGHT OUTER JOIN
+	FULL OUTER JOIN
+	SMB (sort merge bucket)
+	equie join
+	
+4. What are the factors that we consider while creating a hive table
+		File structure, serde , file conversion ,location , etc 
+
+
+1. Why can't we use Java primitive data types in Map Reduce?
+		In Hadoop and BigData every thing considered as Stream which is moving over cluster network and storing over disk , so Data need to be serialized in Byte Stream.
+
+		but java Serializable is not used as its too heavy and Int and String is fat to handle such big data so IntWritable and Text  provide easier and higher  level of abstraction of same data and it Serialize hadoop object in light way
+
+2. Explain how do you decide between Managed/Internal & External (unmanaged)tables in hive
+
+3. Can we change the default location of Managed tables
+		yes we can , As  changeing defualt location by specifing the location in create table query 
+
+
+		
+
+What is the difference between TextInput format and KeyValue format in Hadoop?
+
+Log file contains entries like user A visited page 1, user B visited page 3, user C visited page 2, user D visited page no 4 . How will you implement a Hadoop job for this to answer the following queries in real-time –   Which page was visited by user C more than 4 times in a day and Which page was visited by only one user exactly 3 times in a day?
+		We can get timestamp and visitor by ip and pages visited .... check for visitor and page visited and we can seta counter if visited for how many time visited . 
+
+You have a file that contains 200 billion URLs. How will you find the first unique URL using Hadoop MapReduce?
+		We could set a key on url and checked for number of iterator is found for values if it one then that url is unique
+What is InputSplit in Hadoop?
+		Data is split into blocks (256MB) 
+How will you scale a system to handle huge amounts of unstructured data?
+		we could convert the data into structure format by using different algorithm
+		
+Assume that the web server creates a log file with timestamp and query. How will you design the Hadoop architecture (explaining how you will store the data) that can help you return top 15 queries made in the last 12 hours.
+
+
+You have a huge file (in GB’s) that contains data in multiple languages. Find n most frequently occurring patterns in a text file using Hadoop MapReduce.
+
+
+What is heap error and how can you fix it?
+		Java applications are only allowed to use a limited amount of memory. This limit is specified during application startup. To make things more complex, Java memory is separated into two different regions. These regions are called Heap space and Permgen (for Permanent Generation
+
+		The size of those regions is set during the Java Virtual Machine (JVM) launch and can be customized by specifying JVM parameters -Xmx and -XX:MaxPermSize. If you do not explicitly set the sizes, platform-specific defaults will be used.
+		The java.lang.OutOfMemoryError: Java heap space error will be triggered when the application attempts to add more data into the heap space area, but there is not enough room for it.
+		Note that there might be plenty of physical memory available, but the java.lang.OutOfMemoryError: Java heap space error is thrown whenever the JVM reaches the heap size limit.
+
+
+
+If you have configured Java version 8 for Hadoop and Java version 7 for Apache Spark, how will you set the environment variables in the basic configuration file?
+
+Differentiate between bash and basic profile.
+	All the bash configurations are saved on a file (same applies for all programs). For all normal terminal sessions, the configuration comprising of environment variables, default directory, color, bash theme etc. are stored in the configuration file.
+	The name of the configuration file is generally ".bashrc" for terminal-sessions and ".bash_profile" for Login shells.
+
+	When a user login then the shell will check .bash_profile to get more details for user like User specific environment and startup programs.
+
+
+Implement word count program in Apache Hive.
+				Assume we have data in our table like below
+
+				This is a Hadoop Post
+				and Hadoop is a big data technology
+
+				and we want to generate word count like below
+
+				a  2
+				and  1
+				Big  1
+				data  1
+				Hadoop 2
+				is  2
+				Post  1
+				technology 1
+				This  1
+
+				Now we will learn how to write program for the same.
+
+
+				1.Convert sentence into words
+
+				 the data  we have is in sentences,first we have to convert that it into words applying space as delimiter.we have to use split function of hive.
+
+				split (sentence ,' ')
+
+
+				2.Convert column into rows
+
+				Now we have array of strings like this 
+				[This,is,a,hadoop,Post] 
+				but we have to convert it into multiple rows like below
+
+				This
+				is
+				a
+				hadoop
+				Post
+
+				I mean we have to convert every line of data into multiple rows ,for this we have function called explode in hive and this is also called table generating function.
+
+				SELECT explode(split(sentence, ' ')) AS word FROM texttable
+
+				and create above output as intermediate table.
+
+				(SELECT explode(split(sentence, ' ')) AS word FROM texttable)tempTable
+
+				after second step you should get output like below
+
+				a 
+				a
+				and  
+				Big  
+				data  
+				Hadoop  
+				Hadoop
+				is  
+				is
+				Post  
+				technology 
+				This
+
+
+				3.Apply group by
+
+
+				after second step , it is straight forward ,we have to apply group by to count word occurrences.
+
+				select word,count(1) as count from
+				(SELECT explode(split(sentence, ' ')) AS word FROM texttable)tempTable
+				group by word
+
+				
+				OR
+				===
+				CREATE TABLE docs (line STRING);
+				LOAD DATA INPATH 'text' OVERWRITE INTO TABLE docs;
+				CREATE TABLE word_counts AS
+				SELECT word, count(1) AS count FROM
+				(SELECT explode(split(line, '\s')) AS word FROM docs) w
+				GROUP BY word
+				ORDER BY word;
+
+
+How can you implement global sort and partitioning logic in Apache Hive?
+Apple Hadoop Developer Interview Questions
+
+There are 100,000 files spread across multiple servers which need to be processed. How will you do that using Hadoop?
+		we need to move it on hdfs then processed li Mutiplefile option 
+What are the Map and Reduce functions in the standard Hadoop “Hello World” word count program?
+Bloomberg LP Hadoop Interview Questions
+
+How will you manage multiple nodes together without having a master node in your architecture design?
+		HAdoop needed master node for commnuications
+
+
+Data Access Components are - Pig and Hive
+
+Data Storage Component is - HBase
+
+Data Integration Components are - Apache Flume, Sqoop, Chukwa
+
+Data Management and Monitoring Components are - Ambari, Oozie and Zookeeper.
+
+Data Serialization Components are - Thrift and Avro
+
+Data Intelligence Components are - Apache Mahout and Drill.
+
+
+	NameNode: NameNode is at the heart of the HDFS file system which manages the metadata i.e. the data of the files is not stored on the NameNode but rather it has the directory tree of all the files present in the HDFS file system on a hadoop cluster. NameNode uses two files for the namespace-
+
+	fsimage file- It keeps track of the latest checkpoint of the namespace.
+
+	edits file-It is a log of changes that have been made to the namespace since checkpoint.
+
+	Checkpoint Node-
+
+	Checkpoint Node keeps track of the latest checkpoint in a directory that has same structure as that of NameNode’s directory. Checkpoint node creates checkpoints for the namespace at regular intervals by downloading the edits and fsimage file from the NameNode and merging it locally. The new image is then again updated back to the active NameNode.
+
+	BackupNode:
+
+	Backup Node also provides check pointing functionality like that of the checkpoint node but it also maintains its up-to-date in-memory copy of the file system namespace that is in sync with the active NameNode.
+
+
+
+Default port number :-
+    NameNode 50070
+	Job Tracker 50030
+	Task Tracker 50060
+
+
+
+6. How can you overwrite the replication factors in HDFS? 
+
+	The replication factor in HDFS can be modified or overwritten in 2 ways-
+
+	1)Using the Hadoop FS Shell, replication factor can be changed per file basis using the below command-
+		$hdfs dfs –setrep –w 2 /my/test_file (test_file is the filename whose replication factor will be set to 2)
+
+	2)Using the Hadoop FS Shell, replication factor of all files under a given directory can be modified using the below command-
+		$hdfs dfs –setrep –w 5 /my/test_dir (test_dir is the name of the directory and all the files in this directory will have a replication factor set to 5)
+
+
+Explain the difference between NAS and HDFS. 
+
+	NAS runs on a single machine and thus there is no probability of data redundancy whereas HDFS runs on a cluster of different machines thus there is data redundancy because of the replication protocol.
+	NAS stores data on a dedicated hardware whereas in HDFS all the data blocks are distributed across local drives of the machines.
+	In NAS data is stored independent of the computation and hence Hadoop MapReduce cannot be used for processing whereas HDFS works with Hadoop MapReduce as the computations in HDFS are moved to data.
+
+What is the process to change the files at arbitrary (based on random choice rather than any reason or system)locations in HDFS? 
+
+	HDFS does not support modifications at arbitrary offsets in the file or multiple writers but files are written by a single writer in append only format i.e. writes to a file in HDFS are always made at the end of the file.
+
+
+Explain about the indexing process in HDFS.
+
+	Indexing process in HDFS depends on the block size. HDFS stores the last part of the data that further points to the address where the next part of data chunk is stored.
+
+
+11. What is a rack awareness and on what basis is data stored in a rack? 
+
+	All the data nodes put together form a storage area i.e. the physical location of the data nodes is referred to as Rack in HDFS. The rack information i.e. the rack id of each data node is acquired by the NameNode. The process of selecting closer data nodes depending on the rack information is known as Rack Awareness.
+
+	The contents present in the file are divided into data block as soon as the client is ready to load the file into the hadoop cluster. After consulting with the NameNode, client allocates 3 data nodes for each data block. For each data block, there exists 2 copies in one rack and the third copy is present in another rack. This is generally referred to as the Replica Placement Policy.
+
+
+
+Explain the usage of Context Object. 
+
+	Context Object is used to help the mapper interact with other Hadoop systems.
+	Context Object can be used for updating counters, to report the progress and to provide any application level status updates.
+	ContextObject has the configuration details for the job and also interfaces, that helps it to generating the output.
+
+
+
+What are the core methods of a Reducer? 
+
+	The 3 core methods of a reducer are –
+
+	1)setup () – This method of the reducer is used for configuring various parameters like the input data size, distributed cache, heap size, etc.
+
+	Function Definition- public void setup (context)
+
+	2)reduce () it is heart of the reducer which is called once per key with the associated reduce task.
+
+	Function Definition -public void reduce (Key,Value,context)
+
+	3)cleanup () - This method is called only once at the end of reduce task for clearing all the temporary files.
+
+	Function Definition -public void cleanup (context)
+
+
+Explain about the partitioning, shuffle and sort phase Click here to Tweet
+
+	Shuffle Phase-Once the first map tasks are completed, the nodes continue to perform several other map tasks and also exchange the intermediate outputs with the reducers as required. This process of moving the intermediate outputs of map tasks to the reducer is referred to as Shuffling.
+
+	Sort Phase- Hadoop MapReduce automatically sorts the set of intermediate keys on a single node before they are given as input to the reducer.
+
+	Partitioning Phase-The process that determines which intermediate keys and value will be received by each reducer instance is referred to as partitioning. The destination partition is same for any key irrespective of the mapper instance that generated it.
+
+
+
+
+ How to write a custom partitioner for a Hadoop MapReduce job? 
+	Steps to write a Custom Partitioner for a Hadoop MapReduce Job-
+
+	A new class must be created that extends the pre-defined Partitioner Class.
+	getPartition method of the Partitioner class must be overridden.
+	The custom partitioner to the job can be added as a config file in the wrapper which runs Hadoop MapReduce or the custom partitioner can be added to the job by using the set method of the partitioner class
+
+
+
+
+Explain about some important Sqoop commands other than import and export.
+
+		Create Job (--create)
+
+		Here we are creating a job with the name my job, which can import the table data from RDBMS table to HDFS. The following command is used to create a job that is importing data from the employee table in the db database to the HDFS file.
+
+		$ Sqoop job --create myjob \
+
+		--import \
+
+		--connect jdbc:mysql://localhost/db \
+
+		--username root \
+
+		--table employee --m 1
+
+		Verify Job (--list)
+
+		‘--list’ argument is used to verify the saved jobs. The following command is used to verify the list of saved Sqoop jobs.
+
+		$ Sqoop job --list
+
+		Inspect Job (--show)
+
+		‘--show’ argument is used to inspect or verify particular jobs and their details. The following command and sample output is used to verify a job called myjob.
+
+		$ Sqoop job --show myjob
+
+		Execute Job (--exec)
+
+		‘--exec’ option is used to execute a saved job. The following command is used to execute a saved job called myjob.
+
+		$ Sqoop job --exec myjob
+
+2. How Sqoop can be used in a Java program?
+
+	The Sqoop jar in classpath should be included in the java code. After this the method Sqoop.runTool () method must be invoked. The necessary parameters should be created to Sqoop programmatically just like for command line.
+
+3. What is the process to perform an incremental data load in Sqoop?
+
+	The process to perform incremental data load in Sqoop is to synchronize the modified or updated data (often referred as delta data) from RDBMS to Hadoop. The delta data can be facilitated through the incremental load command in Sqoop.
+
+	Incremental load can be performed by using Sqoop import command or by loading the data into hive without overwriting it. The different attributes that need to be specified during incremental load in Sqoop are-
+
+	1)Mode (incremental) –The mode defines how Sqoop will determine what the new rows are. The mode can have value as Append or Last Modified.
+
+	2)Col (Check-column) –This attribute specifies the column that should be examined to find out the rows to be imported.
+
+	3)Value (last-value) –This denotes the maximum value of the check column from the previous import operation.
+
+										$ sqoop import \
+										--connect jdbc:mysql://localhost/userdb \
+										--username root \
+										--table emp \
+										--m 1 \
+										--incremental append \
+										--check-column id \
+										-last value 1205
+
+
+Is it possible to do an incremental import using Sqoop?
+
+	Yes, Sqoop supports two types of incremental imports-
+
+	1)Append :-ONLY appends the data to existing data-sets, can also append duplicates - NOTE: this will NOT overwrite the data but will append
+			--incremental append
+			--check-column dpt_id
+			--last-value 10
+
+	2)Last Modified:- Appends the new data and Updates the existing data - NO duplicates - NOTE: this will not overwrite the data but will update OR append
+				--incremental lastmodified
+				--check-column lastupdated
+				--last-value 20160802000000
+
+	To insert only rows Append should be used in import command and for inserting the rows and also updating Last-Modified should be used in the import command.
+
+
+By default Sqoop is working with 4 Mappers and not working with reducer. So getting output from mappers. 
+	If block size is less than 64MB not need to use 4 mapper. Such situation can reduce or increase mappers by cammands
+			
+				-m <number of mappers you wants to work with>
+				-------------------------------------------
+				
+1. Sqoop support to Linux OS. Means can install on Linux
+2. While installation jdbc driver to connect to perticular Database is not comes bydefault. We need to explicitly add the jdbc driver in lib directory of sqoop. 
+	
+
+What is the standard location or path for Hadoop Sqoop scripts?
+
+		/usr/bin/Hadoop Sqoop
+
+
+How can you check all the tables present in a single database using Sqoop?
+
+	The command to check the list of all tables present in a single database using Sqoop is as follows-
+		Sqoop list-tables –connect jdbc: mysql: //localhost/user;
+
+
+How are large objects handled in Sqoop?
+
+	Sqoop provides the capability to store large sized data into a single field based on the type of data. Sqoop supports the ability to store-
+
+	1)CLOB ‘s – Character Large Objects
+
+	2)BLOB’s –Binary Large Objects
+
+	Large objects in Sqoop are handled by importing the large objects into a file referred as “LobFile” i.e. Large Object File. The LobFile has the ability to store records of huge size, thus each record in the LobFile is a large object.
+
+
+Can free form SQL queries be used with Sqoop import command? If yes, then how can they be used?
+
+	Sqoop allows us to use free form SQL queries with the import command. The import command should be used with the –e and – query options to execute free form SQL queries. When using the –e and –query options with the import command the –target dir value must be specified.
+
+
+
+ Differentiate between Sqoop and distCP.
+
+	DistCP utility can be used to transfer data between clusters whereas Sqoop can be used to transfer data only between Hadoop and RDBMS.
+
+
+
+
+Explain about the SMB Join in Hive.
+
+	In Sort Merge Bucket SMB join in Hive, each mapper reads a bucket from the first table and the corresponding bucket from the second table and then a merge sort join is performed. Sort Merge Bucket (SMB) join in hive is mainly used as there is no limit on file or partition or table join. SMB join can best be used when the tables are large. In SMB join the columns are bucketed and sorted using the join columns. All tables should have the same number of buckets in SMB join.
+
+
+What are the additional benefits YARN brings in to Hadoop?
+
+	Effective utilization of the resources as multiple applications can be run in YARN all sharing a common resource. In Hadoop MapReduce there are seperate slots for Map and Reduce tasks whereas in YARN there is no fixed slot. The same container can be used for Map and Reduce tasks leading to better utilization.
+	YARN is backward compatible so all the existing MapReduce jobs.
+	Using YARN, one can even run applications that are not based on the MaReduce model
+
+
+How can native libraries be included in YARN jobs?
+
+	There are two ways to include native libraries in YARN jobs-
+
+	1)  By setting the -Djava.library.path on the command line  but in this case there are chances that the native libraries might not be loaded correctly and there is possibility of errors.
+
+	2) The better option to include native libraries is to the set the LD_LIBRARY_PATH in the .bashrc file.
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------
+		https://dzone.com/articles/hadoop-practice
+	How to handle NameNode Failure :-
+	-----------------------------------
+if NameNode failure occurs then it requires manual intervention of the Hadoop Administrators to recover the NameNode with the help of a secondary NameNode.
+
+If multiple NameNodes:- It introduces Hadoop 2.0 High Availability feature that brings in an extra NameNode (Passive Standby NameNode) to the Hadoop Architecture which is configured for automatic "**"failover"**".
+
+NameNode SPOF problem limits the overall availability of the Hadoop Cluster in the following ways:-->
+
+If there are any planned maintenance activities of hardware or software upgrades on the NameNode then it will result in overall downtime of the Hadoop Cluster.
+If any unplanned event triggers, which results in the machine crashing, then the Hadoop cluster would not be available unless the Hadoop Administrator restarts the NameNode.
+
+Please see Digram for clearification--> https://s3.amazonaws.com/files.dezyre.com/images/blog/What+is+Hadoop+2.0+High+Availability_1.png
+
+Data flow :- explain every thing what kind of row data input and out 
+--------------------------------------------------------------------
+
+1. Data is ganarated on Server as sites logs (explain a details of log file )
+2. through cLI Command line interface we moved data from server to local with WinSCP and then to HDFS 
+3. On HDFS we do Data processing using throughtful out come like 
+		1. time duration where highest trafic found,
+		2. relation of catragory contains / pages and ads ,
+		3.  What is kind of contains has been viewed more with respitive to timestamp. 
+		4. what kind of ads we can  mapped to contains, 
+		5. SEO or busniess user do lost of experiments with contains and pages ranking , widgets, static ads,etc, We are do the analysis of these experiment.
+		6.  errors on run time which causes a lose , 
+		7. What kind of errors of that ,
+		8. Is it related on perticular segments,
+		9. what is root cause of that error.
+		10. Is it happened on perticular time segment or Server (load balancing ) or at fornt end level
+
+4. Thes throught ful information is stored in Database ex Hive or connect it with Qlikview or tablaeu 
+
+	
+	Switchover and Failover Operations
+	------------------------------------
+A switchover is a role reversal between the primary database and one of its standby databases. A switchover guarantees no data loss and is typically done for planned maintenance of the primary system. During a switchover, the primary database transitions to a standby role, and the standby database transitions to the primary role.
+
+A failover is done when the primary database (all instances of an Oracle RAC primary database) fails or has become unreachable and one of the standby databases is transitioned to take over the primary role. Failover should be performed when the primary database cannot be recovered in a timely manner. Failover may or may not result in data loss depending on the protection mode in effect at the time of the failover
+
+
+
+			Appache Hadoop Working on Standalone mode 
+			------------------------------------------
+
+1. Install Java and Configured Env.--> sudo apt-get install openjdk-7-jdk
+	Java_Home can be configured in ~/.bash_profile or ~/.bashrc file. Alternatively you can also let hadoop know this by setting  	Java_Home  in hadoop conf/hadoop-env.sh file.
+	Use the below command to set JAVA_HOME on Ubuntu
+		export JAVA_HOME=/usr/lib/jvm/java-6-sun
+	JAVA_HOME can be verified by command
+		echo $JAVA_HOME
+
+2. SSH Configuration --> sudo apt-get install ssh
+	Generate ssh key
+	ssh -keygen -t rsa -P “” (press enter when asked for a file name; this will generate a passwordless ssh file)
+	Now copy the public key (id_rsa.pub) of current machine to authorized_keysBelow command copies the generated public 			key in the .ssh/authorized_keys file:
+			cat $HOME/.ssh/id_rsa.pub >> $HOME/.ssh/authorized_keys
+	Verify ssh configuration using the command
+			ssh localhost
+			Pressing yes will add localhost to known hosts
+
+3. Configured HAdoop --> Extract hadoop release and HADOOP_HOME pointing to hadoop directory
+	Use the following command to create an environment variable that points to the Hadoop installation directory (HADOOP_HOME)
+			export HADOOP_HOME=/home/user/hadoop
+	Now place the Hadoop binary directory on your command-line path by executing the command
+			export PATH=$PATH:$HADOOP_HOME/bin
+
+4. Create Data Directory for Hadoop
+	An advantage of using Hadoop is that with just a limited number of directories you can set it up to work correctly. Let us 	create a directory with the name hdfs and three sub-directories name, data and tmp.
+
+	Since a Hadoop user would require to read-write to these directories you would need to change the permissions of above 	directories to 755 or 777 for Hadoop user.
+
+5. Configure Hadoop XML files --> Next, we will configure Hadoop XML file.  Hadoop configuration files are in the  HADOOP_HOME/conf 	dir.
+		conf/core-site.xml
+		-------------------
+			<!--?xml version="1.0"-->>
+			<!--?xml -stylesheet type="text/xsl" href="configuration.xsl"?-->
+			<! -- Putting site-specific property overrides the file. -->
+ 
+				fs.default.name
+			hdfs://localhost:9000
+ 
+			hadoop.temp.dir
+			/home/girish/hdfs/temp<span style="font-family: Georgia, 'Times New Roman', 'Bitstream Charter', Times, serif; 			font-size: 13px; line-height: 19px;"> </span>
+		conf/hdfs-site.xml
+		-------------------
+			<! -- Putting site specific property overrides in the file. -->
+ 
+			dfs.name.dir
+			/home/girish/hdfs/name
+ 
+			dfs.data.dir
+			/home/girish/hdfs/data
+ 
+			dfs.replication
+
+			<strong style="font-family: Georgia, 'Times New Roman', 'Bitstream Charter', Times, serif; font-size: 13px; 			line-height: 19px;">conf/mapred-site.xml</strong>
+
+		<! -- Putting site-specific property overrides this file. -->
+ 
+			mapred.job.tracker
+			localhost:9001
+		conf/masters-->	Not required in single node cluster.
+		conf/slaves--> Not required in single node cluster.
+
+6. Format Hadoop Name Node-> ~/hadoop/bin/hadoop namenode -format
+	
+7 Start Hadoop Demons and verify it --> ~/hadoop/bin/start-all.sh  and jps 
+		Note: If your master server fails to start due to the dfs safe mode issue, execute this on the Hadoop command line:
+
+		hadoop dfsadmin -safemode leave
+		Also make sure to format the namenode again if you make changes to your configuration.
+
+
+8. Verify UIs by namenode & job tracker  --> Open a browser window and type the following URLs:
+
+			namenode UI:   http://machine_host_name:50070
+
+			job tracker UI:   http://machine_host_name:50030
+
+
+--------------------------------------------------------------------------------------------------------------------------
+
+
+	 NameNode:--> 
+1.  fsimage - Its the snapshot of the filesystem when namenode started
+2.  Edit logs - Its the sequence of changes made to the filesystem after namenode started
+Only in the restart of namenode , edit logs are applied to fsimage to get the latest snapshot of the file system. But namenode restart are rare in production clusters which means edit logs can grow very large for the clusters where namenode runs for a long period of time. The following issues we will encounter in this situation.
+
+1. Editlog become very large , which will be challenging to manage it
+2. Namenode restart takes long time because lot of changes has to be merged
+3. In the case of crash, we will lost huge amount of metadata since fsimage is very old
+
+So to overcome this issues we need a mechanism which will help us reduce the edit log size which is manageable and have up to date fsimage ,so that load on namenode reduces . It’s very similar to Windows Restore point, which will allow us to take snapshot of the OS so that if something goes wrong , we can fallback to the last restore point.
+
+	Secondary NameNode-->
+1. Secondary Namenode gets the edit logs from the namenode in regular intervals and applies to fsimage
+2. Once it has new fsimage, it copies back to namenode
+3. Namenode will use this fsimage for the next restart,which will reduce the startup time
+
+
+
+Can we set required number of Mapper and required number of Reducers ?
+		No, we can not set number of Mapper. Hadoop OR Jobtacker will decide. Depending on number of spilt number of Mapper is deciced 
+			
+				Old API 								NEW API
+			JobConf.class > setNumMapTask(int)			Job.class > There is not such method in NEW API (saME METHOD IS removed to decide by hadoop)
+			(setNumMapTask method allow to set number of mapper )
+			
+
+		But we can number of Reducers by setNumReducerTask (int)
+		
+		
+		
+Combiner :- Main job of combiner is reduce load of Reducers by Shaffaling (remove duplicate key by combine all similar values ) 
+			Number of combiner is equal to number of Mapper 
+			
+			
+How to configure input files and Output directory in Driver code :-
+		FileInputFormat.setInputPaths(JobConf, new Path(args[0])
+		FileOutputFormat.setOutputPath(JobConf, new Path (args[1]) )
+		
+		Whereas hadoop -jar wc.jar PackageName.ClassName InputFile OutputDriectory;  Hence InputFile is pass as args[0] and OutputDriectory is pass as args[1]
+	
+How to handle if there are n number of inputFiles :-
+		
+		Comamnd :- hadoop -jar PackageName.ClassName InputFile[0] InputFile[1] InputFile[2] OutputDriectory
+		
+		FileInputFormat.setInputPaths(JobConf, new Path(args[0] , new Path(args[1], new Path(args[2])
+		FileOutputFormat.setOutputPath(JobConf, new Path(args[1])
+		
+						
+						
+Difference between Internal and External Table :-
+
+			Internal Table 														External Table
+			---------------	  (TableName)										---------------
+			/usr/hive/warehouse/emp(d)/emp(f)									/durga/ram/emp(f)
+			If table is deleted emp(f) is also became invalid 					If deleted table still file is there So data lost problem 
+			Select * from emp: shows number file present in emp directory	
+			One file can refer by one table 									One mutiple file can be refer by one table
+			
+			Internal table file security is controlled solely via HIVE.
+			E.g. tbl_batting can only be accessed via HDFS internal account. 
+			
+				r = read
+				w = write
+				x = execute
+				Please note the "user & group" name who can access the file 
+			and the security flags next to it in the screenshot below:
+			
+	
+	
+
+When to Use :-
+		*Want to store the data temporary.								* Want to manage the data outside HIVE e.g. you are planning        
+																			to use an ETL tool to load/merge data files etc.
+		*	Want to use HIVE to manage the lifecycle of tables and data.	*	Want to load the latest information to the table but still 
+																			want to retain old dataset in a file on HDFS for regulatory/legal 
+																			purposes.
+																			*	Are not planning to create a table from another table schema
+																			e.g. Create table1 as (Select * from table2)			
+			
+Difference between new API and Old API 
+			Old API													New API				
+			-------													--------
+			JobConf (org.appache.hadoop.mapred)						Job (org.appache.hadoop.mapreduce)
+			Tool, ToolRunner 										There no such class 
+			To submit a job -JonClient.runJob(Conf)					waitForComplition(boolean)
+			Set number of mapper by using setNumMapTask(int)		There is not such method 
+			MapperCode > 
+				MapReduceBase (o.a.h.mapred)							There is no such method 
+				Mapper is an interface									Mapper is abstract class
+				Output.collector, Reporter								context
+				collect(key,values)										write(key,values)
+			ReducersCode >
+				MapReduceBase										There is no such class
+				Reducer is an interface								Reducer ia an abstract method 
+				Output.collector, Reporter								context
+				collect(key,values)										write(key,values)
+				Partitioner is an interface								Partitioner is abstract class
+				Iterator 												Iterable 
+				IdentityReducer, IdentityMapper							No such classess
+				part-00000(reducer)										part-r-00000(reducer)
+				part-00000(mapper)										part-m-00000(mapper)
+
+
+Hadoop Architecture :
+			hdfs is having 5 services --> NameNode , secondary NameNode, JobTracker , DataNode , TAskTracker 
+			
+			
+How to debug the programe :
+			1. Right click on DriverCode > Run Configuration > Double Click on JavaApplication > Select the program for Debuging 
+			2. Pass the Path of input and output file as "Argument" (Next tab of Main) > and  close the window 
+			3. Set a break points  in code 
+			4. Run program as Debug as Java Application
+https://pravinchavan.wordpress.com/2013/04/05/remote-debugging-of-hadoop-job-with-eclipse/
+			
+			
+How to displayed Table from RDBMS MySQL from Sqoop (hadoop):-
+			$sqoop list-Table \
+			>--connect jdbc:mysql://<hostName:portNumber>/<databaseName> \
+			>--username <UserName> --password <passWord> 
+
+			
+
+How to export data from HDFS to RDMS :-
+			Prerequesite : Make sure Table is created in RDBMS 
+			 $sqoop export \
+			>--connect jdbc:mysql://<hostName>/<databaseName> \
+			>--username <userName> --password<passWord> \
+			>--table <tableName> \
+			>--input-fields-terminated-by '\t' \
+			>--export-div <directoryPath >     
+	//directoryPath --> The path in hdfs where data is present
+
+
+How to import part of the table RDBMS from HDFS:-
+			$sqoop import \
+			>--connect jdbc:mysql://<hostName>/<databaseName> \
+			>--username <userName> --password<passWord> \
+			>--table <tableName> --fields-terminated-by '\t' \
+			>--colomns "colomnName , ColomnName2"
+			
+	Where condition :--
+			>--where "sal > 100000"  -m <No of Mapper > 
+			>--colomns "colomnName, colomnName2"
+	//Note :- sqoop only work with mapper . we could specify the number of mapper in here 
+	
+
+	
+How to load data into HIVE table 
+		There are 2 ways of loading a data to from 
+			load file system :- Load data local inpath <filepath > into table <tableName>
+			HDFS   :- Load data inpath <filesytem> into table <tableName>
+			
+
+How to work with Localfile system cammands :Linux:
+		creating file 
+			1. Cat
+			2. Vi
+			3. touch
+			
+			1.cat can  be use in 3 ways 
+				a. cat >    To create file 
+				b. cat>>    File not preseent create a file and if present then appends a text
+				c. cat 		
+		
+			example : 1. cat> file.txt 
+					  2. cat>> file.txt
+					  3. cat  file.txt
+	Note :- Ctrl+d :- to save and exit from Vi editor 
+	
+	
+
+How to work with partion in Hive :
+		What is importance of Partition ?
+			When executed the select * from emp where city = ngp.  This query check each and every row that affected the performace. To avoid created partition with city.So thta it will only look for the same Partition.
+			
+	Creating table in Hive :-
+			hive> create table emp (ipAddress String , name String )
+				partioned by  (location String )
+				row format delimiited 
+				field terminated by '\t'
+				
+			hive> load data local inpath ('/home/edureka/Destop/testdata.txt') into table emp \
+				 pertioned (location = Nagpur)
+		Note :- Do the same thing for all locations (cities)
+
+	Fetch data from hive table :
+			hive> select * from emp;
+			
+	
+			
+Defualt Mapper and default Reducer  :- IdentifierMapper and IdentifierReducer  And Default Partitioner is HashPartioner
+
+
+Partitioner Program :
+			public class mypartitioner implements partitioner <Text, IntWritable > // output of mapper 
+			{
+				public void Configure (JobConf conf)
+				
+			}
+			{
+				public void getPartition (Text key , Intwritable values, int setNumRedTask)
+				{
+	/// if length is  of key is 1 then pass to reducer 1 , if it is 2 then pass to reducer2 . So convert into String 
+					
+						String s = key.toString ();
+						if (s.length() == 1){
+						return 0;
+						}
+						if (s.length() == 2){
+						return 1;
+						}
+						if (s.length() == 3){
+						return 2;
+						}
+						
+				}
+			}
+Now configuring the programe in Driver class 
+					conf.setPartitionerClass (mypartitioner.class)
+					conf.setNumReducerTask(4);  // number of reducer 
+
+
+					
+Sqoop in Hadoop:-  It is interface to transfer data from HDFS to RDBMS and vice vers
+
+What is resposibility of NameNode ?
+		NameNode store Metadata . 
+		NameNode recevie heartbit from DataNodes 
+		
+
+
+		
+How to initizied serviecs in hadoop
+		hdfs-site.xml -> setup of intermediate data and replications
+		mapred-site.xml -> take care of these jobs 
+		core-site.xml -> takecare of metadata. 
+		
+		hdfs-site.xml
+		-------------
+			<configuration>
+				<property>
+					<name> fs default name </name>
+					<value> hdfs://localhost:8082<\value>
+				<\property>
+			<\configuration>
+			
+			
+		mapred-site.xml
+		-------------
+			<configuration>
+				<property>
+					<name>mapred.jab.track</name>
+					<value> hdfs://localhost:8081<\value>
+				<\property>
+			<\configuration>
+
+		core-site.xml
+		-------------
+			<configuration>
+				<property>
+					<name> dfs.replication </name>
+					<value> 1 <\value>
+				<\property>
+			<\configuration>	
+			
+What is Hive :-
+		DataType of Hive :-			Number 			collection Type 
+									---------		---------------
+									TnyInt			map
+									smallInt		arrary
+									Int				struct	
+									BigInt
+									float
+									double
+									String 
+									
+									
+		Table is create in 2 ways 
+		    1. Internal table (Managed Table )
+							hive> Create table emp (Empid int , Name String , Sal float)
+								row Format delimited
+								fields terminated-by '\t'
+								
+			2. External Table 
+							hive> Create external table (Empid int, name String , Sal float)
+								row format dilimited by '\t'
+								location "\home\edureka/Destop/testdata" ;
+			
+			
+			
+What is importance of RecordReader
+		It is interface to Converting the different format of file into key.value pair. And this key, values is passed to mapper input 
+		Actully , number of spilt is equal to number of mapper And each mapper is having one recordReader 
+		
+		
+
+Single  Table insertion in Hive
+		1. Suppose there is sale table (sid int , sname varchar2, loc varchar2) in hive 
+		2. create  table in hive 
+					hive>create table target (id int , loc String)
+						row format delimiited
+						fields terminated by '\t'
+		3. insert data in hive table target
+					hive> insert overwrite table target
+						select sid , sname 
+				 		from sale ;
+			
+		4. select * from target;
+Mutiple table insertion :-
+		----------------------------------------------------------------------------------------------
+		| id | name | sal |   loc    | 	did		|	dname  	|	ph		|	email 		| company	  |
+		----------------------------------------------------------------------------------------------	
+		
+		1. store the above table in three different small table 
+			target 1 (id int , name string , sal float)
+			target2 (loc string , did int , dname string)
+			target3 (ph int , email string, company Sting )
+			
+		2. insert data into tables
+			insert overwrite table target1
+			select id ,name , sal;
+			insert overwrite table target2
+			select loc ,did , dname;
+			insert overwrite table target3
+			select ph ,email , company;
+		
+
+		
+What runs first: the partitioner or the combiner?
+
+		

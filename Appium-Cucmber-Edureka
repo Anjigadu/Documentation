@@ -1,0 +1,778 @@
+Native, Web or Hybrid Apps? What’s The Difference?
+	Native Apps
+---------------
+	Native apps are what typically springs to mind when you think of an app. You download them from the App Store or Google Play, they sit within your device’s applications and you launch them by tapping their icon.
+
+		Developing Native Apps
+
+				What distinguishes native apps from the alternatives mentioned is that they are designed and coded for a specific kind of device. For instance, iPhone apps are written in Objective-C, Android apps in Java, etc.
+
+		Advantages:- They offer the fastest, most reliable and most responsive experience to users.
+		
+	Web Apps? :- If you’ve ever seen the ‘mobile version’ of a site, that’s what we’re talking about. An “app” like this loads 
+ -------------
+				within a mobile browser, like Safari or Chrome, like every other website. Your audience doesn’t have to install a web app. 
+
+	Hybrid Apps?  
+ --------------
+				They are usually quicker to build (and thus cheaper) than native apps, but a step-up from what you can expect out of browser-based web apps. Is the hybrid app the best of both worlds?
+
+				The bulk of the app is built using cross-compatible web technologies, such as HTML5, CSS and Javascript — the same languages used to write web apps.
+
+					one big advantage in hybrid apps.  Being built on one single base, you can add functionality and have multiple versions of the app all benefit from it
+				There’s a big caveat here: if you’re building an app for an existing site or you have a mobile web app ready that does exactly what your app should do, but only misses what a native app generally provides (app store presence, push notifications, home screen icon, offline use), then turning your site or web app into a native app can be both quick and economical.
+
+			
+
+
+Explain the design concept of Appium?
+
+		Appium is an “HTTP Server” written using the Node.js platform and drives iOS and the Android session using Webdriver JSON wire protocol.
+		Before initializing the Appium Server, Node.js must be pre-installed on the system.
+		Appium receives connection and command request from the client and execute that command on mobile devices (Android / iOS).
+		Appium responds back with HTTP responses.
+		Appium to execute these request uses the mobile test frameworks Apple Instruments for iOS and Google UIAutomator for Android API level 16 or higher
+
+			
+				
+Prerequisite to use APPIUM
+
+Android Set UP
+http://www.guru99.com/introduction-to-appium.html
+http://toolsqa.com/mobile-automation/appium/locate-element-using-uiautomatorviewer/
+
+	ANDROID SDK [Link]-
+	JDK (Java Development Kit) [Link]
+	TestNG [Link]
+	Eclipse [Link]
+	Selenium Server JAR [Link]
+	Webdriver Language Binding Library [Link]
+	APPIUM For Windows [Link]
+
+
+
+
+APPIUM Installation on Windows:
+	Node.js :- as Appium is base on node.js 
+	Step 1- Install Android SDK in your system.
+	Set Environment veriable : for ANDROID_HOME = adt-bundled-windows-x86_64-20140321\sdk and Path till bin
+	
+	Developer option is ON on mobile device >> Setting > Developer > debugging option is ON
+	Check mobile device is connected to adb :- cmd + Goto path /SDK.../platform-tools> adb device , adb connect ip address of mobile device 
+	Now, navigate to Appium directory in your system and start Appium by clicking Appium.exe file.
+	
+	
+	Your First APPIUM Test Case for Native Android App
+			Step 1) Download ADT eclipse plugin or download ADT bundled separately here
+
+			Step 2) Open Eclipse and Create a new Project >> Package >> Class
+
+			Step 3) Import Selenium library and TestNG inside that new project.
+
+			Step 4) Now Create a small test Program for 'Calculator.app' to sum two numbers.
+
+			
+
+			
+UIAutomator Viewer :- 			
+http://www.guru99.com/uiautomatorviewer-tutorial.html
+http://grokbase.com/t/gg/selenium-users/1278m65f40/iselementpresent-method-is-running-for-more-than-5-minutes
+
+								Udemy Videos 
+							   --------------
+							   
+Note : to work on older verion of android device Go for Selindroied and Run selendroid start command from Admin pannal. Better to use Upgrated version:-  
+		referance http://developer.android.com/reference/android/support/test/uiautomator/package-summary.html
+
+Locating element-using-uiautomatorviewer/:
+	1. List of webelement:-->	driver.findElementsByAndroid.UIAutomator("");
+	
+	2. Find Element by UIAutomator--> driver.findElementByAndroid("UiSelector().className(\"android.widget.button\").text(\"Display popup\")").click();
+	
+	3. By xpath --> driver.findElementBy.Xpath("//android.widget.button[contain(@text,'Display popup')]").click();
+				
+	4. finding the class inside LinearLayout --> Collection of list for LinearLayout=driver.findElementsByAndroid("UiSelector().className(\"android.widget.LinearLayout\")).size();	
+	4.1. collect all the buttons inside the LinearLayout with index 1
+		driver.findElementsByAndroid("UiSelector().className(\"android.widget.LinearLayout\").className(\"android.widget.button\").index(1)");
+	4.2 get the button from 4th LinearLayout. 
+        driver.findElementsByAndroid("UiSelector().className(\"android.widget.LinearLayout\").className(\"android.widget.button\").index(1)").get(3);
+	
+	5. Native app - Click on dyal number from contact number :-
+		WebElement frame= driver.findElement(By.className("android.widget.FrameLayout"));
+		WebElement Scrollview= frame.findElement(By.className("android.widget.Scroll"));
+		List <WebElement> 1sticon= Scrollview.findElements(By.className("android.app.ActionTab");
+		1sticon.get(0).click();
+----------------------------------------------------------------------------
+					-- Appium with Grid --
+1. Check adb device is connected 
+2. Start Grid server 
+		java -jar selenium-server.jar role hub http:github-IP 
+3. Start Appium Node server by creating a jason file-
+	you can add the configuration of each node ie device in json file (Andr1)and then run this file  
+	
+	Command to execute appium node :-
+	appium -a 127.0.0.1 -p 4723 --no-reset -bootstrap-port 4728 -U 192.168.157.101:5555 -nodeconfig %dp@jsonFiles\Andr1.json
+	
+	json configuration format:-
+		{
+				"capabilities":
+				[
+					{	
+						"browserName":"Android",
+						"version": "4.2",
+						"platform":"Android",
+						"deviceName": "i92.168.101:5555"
+					}],
+				"configuration":
+				[
+					"nodeTimeout": 120,
+					"port": 4723,
+					"hubPort": 4444,
+					"proxy": "org.openqa.grid.selenium.proxy.DefaultRemort"
+					"url": "http://127.0.0.1/wb/hub"
+				]
+			}
+
+ 
+	
+4. Testng.xml configuration:-
+		<Suite name ="smoketest" parallel="test" thread count="2">
+			<tests>
+				<test name "run  on Andriod ">
+					<Classes>
+						<parameter name = "port"  value="4448"/>
+						<parameter name = "ip"  value="178.168.0.234:5555"/>
+						<Class Name="testng.referance">
+							<methods>
+								<include name="Ree">
+								<exclude name="rrr">
+							</methods>
+						<Class/>
+					</Classes>
+5. Java code for parametering
+			Class AppiumProject
+				public AndriodDriver<MobileElement> driver;
+				public DesiredCapabilities cap;
+				
+				@Before 
+				@Parameters({"port","ip"})		
+				public void runTest(String port, String ip){
+					String path ="Apkfilepath";
+					File file  	= new file(path)
+					
+					cap = new DesiredCapabilities();
+					cap.setCapability(MobileCapabilityType.PLATFORM_NAME, "Android");
+					cap.setCapability(MobileCapabilityType.PLATFORM_VERSION, "4.2");
+					cap.setCapability(MobileCapabilityType.DEVICE_NAME,ip)
+					cap.setCapability(MobileCapabilityType.APP, file);
+					
+					drive = new AndroidDriver(new URL ("https://localhost:"+port+"wb/hub"), cap)
+					
+					
+				}
+				
+		
+							
+		
+
+--------------------------------------------------------------------------------------------------------------
+		*******************************Cucumber ****************************************
+		How to integrate Cucumber with Selenium Webdriver?
+		- Cucumber is a testing framework to run acceptance test cases. It creates scripts using the BDD approach.
+
+		2- It makes use of a feature file which describes the test cases in plain text format.
+
+		3- Here you write tests in simple English. And later use the Selenium Webdriver to run the test scripts.
+
+		4- To start Cucumber with Selenium, first of all, you require creating a Maven project in Eclipse.
+
+		5- In the Maven’s POM file, you add the Cucumber dependency which brings the support of annotations like the <Given>, <When>, and <Then> and many other.
+
+		XHTML
+
+		<dependency>
+			<groupId>info.cukes</groupId>
+			<artifactId>cucumber-core</artifactId>
+			<version>1.1.5</version>
+		</dependency>
+		<dependency>
+			<groupId>info.cukes</groupId>
+			<artifactId>cucumber-java</artifactId>
+			<version>1.1.5</version>
+		</dependency>
+		<dependency>
+			<groupId>info.cukes</groupId>
+			<artifactId>cucumber-junit</artifactId>
+			<version>1.1.5</version>
+		</dependency>
+		<dependency>
+			<groupId>info.cukes</groupId>
+			<artifactId>cucumber-core</artifactId>
+			<version>1.1.5</version>
+		</dependency>
+		 
+		<dependency>
+			<groupId>info.cukes</groupId>
+			<artifactId>cucumber-java</artifactId>
+			<version>1.1.5</version>
+		</dependency>
+		 
+		<dependency>
+			<groupId>info.cukes</groupId>
+			<artifactId>cucumber-junit</artifactId>
+			<version>1.1.5</version>
+		</dependency>
+		6- Similarly, you can introduce the Selenium dependency into the above project. Alternatively, you can download the latest version of Selenium standalone jar from their website. And then, add to your project as an external jar file.
+
+		If you want to do it via the POM file, then add the following entry.
+
+		XHTML
+
+		<dependency>
+			<groupid>org.seleniumhq.selenium</groupid>
+			<artifactid>selenium-java</artifactid>
+			<version>2.53.0</version>
+		</dependency>
+
+		<dependency>
+		  <groupid>org.seleniumhq.selenium</groupid>
+		  <artifactid>selenium-java</artifactid>
+		  <version>2.53.0</version>
+		</dependency>
+ 
+ 
+10.  Are there any readymade Selenium-Cucumber frameworks available?
+	Yes, there are a few we are listing down below. Though, we recommend building one of your own as it gives you more freedom.
+
+	1- Selenium-Cucumber framework for testing the web and android apps.
+
+	2- Another one is an acceptance testing framework using Cucumber and Selenium Webdriver.
+
+
+Q-9: What are the two files which you need to run a Cucumber test scenario?
+
+	If you want to execute a Cucumber test, then make sure it has the following two files.
+
+	1- A feature file.
+
+	2- A step definition file.
+
+Q-10: What does a feature file contain?
+
+	A feature file in cucumber specifies parameters and conditions for executing the test code. It can combine any of the following.
+
+	1- A feature.
+	2- A user scenario.
+	3- The scenario outline.
+	4- A <Given> clause.
+	5- A <When> clause.
+	6- A <Then> clause.
+	
+
+Q-11: What is a profile in cucumber?
+
+	You can create Cucumber profiles to run a set of features and step definitions. Use the following command to execute a cucumber profile.
+				cucumber features -p <profile_name>
+
+
+Q-12: What are before, after, beforeStep and afterStep hooks?
+
+1- Before: executes before the feature file execution.
+
+2- After: executes after the feature file execution.
+
+3- BeforeStep: executes before the each step execution.
+
+4- AfterStep: executes after the each step execution.
+
+
+Q-13: What are cucumber tags? And why do we use them?
+
+Cucumber tags help in filtering the scenarios. We can tag the scenarios and then run them based on tags.
+
+1- We can add tags to scenarios with <@> symbol.
+
+2- We can use the following command to run a cucumber tagged scenario.
+
+
+cucumber features -t @<tag_name>
+#Example: cucumber features -t @test
+
+Q-14: What is the purpose of cucumber dry-run?
+
+We use to compile the cucumber feature files and step definitions. If there occur any compilation errors, then it shows them on the console.
+
+Q-15: Why do you use the scenario outline?
+
+We use it to execute the same scenario with different test data.
+
+
+Q-16: What if you don’t use the cucumber keywords in test steps?
+
+Please note that it’s not mandatory to write keywords in test steps.
+
+For example, we can build a test step like the one shown in the next line.
+
+e.g.- We are testing using cucumber.
+
+Q-17: List out some of the main differences between Jbehave and Cucumber?
+
+However, the Cucumber and Jbehave share the same perspective, but there are few key differences.
+
+1- Jbehave is Java-based and Cucumber is Ruby-based.
+
+2- Jbehave is story-driven whereas the Cucumber is feature-driven.
+
+
+Q-18: When would you use RSpec and when to use Cucumber?
+
+1- RSpec is more successful in doing unit testing.
+
+2- As you know that Cucumber is a behaviour-driven development tool. So you can use it for System and Integration testing.
+
+
+Q-19: What are the steps to generate a report in Cucumber?
+
+We run the following command to produce HTML reports.
+cucumber <featurename>.feature --format html --out report.html --format pretty
+
+Q-20: What is the right way to execute a specific scenario from the feature file?
+
+We can select the target scenario from a feature file by providing its line number.
+	cucumber features/test.feature:10 --format html > testfeature.html
+	
+	
+
+
+
+			
+-----------------------------------------------------------------------------------------------------------------
+
+Combiner :-
+http://www.tutorialspoint.com/map_reduce/map_reduce_combiners.htm
+Combiner of Reducers which run frist :
+	Map -> Combiner -> Partitioner -> Sort -> Shuffle -> Sort -> Reduce  https://farm3.static.flickr.com/2275/3529146683_c8247ff6db_o.png
+	
+
+
+
+Bigdata :
+FSimage :- snapshot of file system image 
+edits - logs [redo logs in oracle ,just an anology]
+
+Container :- is actul JVM where thr processing is happens inside the node 
+
+AppMaster :- There will be single applicartion master for every job
+
+Schdeular :- schedule number of job 
+Appication manger :- Start appMaster for per job of respective load manager and get the job done by container 
+in short - which node is happaned in taken care by resource manger 
+
+http://www.highlyscalablesystems.com/3235/hadoop-terasort-benchmark/
+
+
+How to run teragen 
+> hadoop jar name.jar And below are the parameters passing with this cammand 
+			1- teragen --> name of application 
+			2- 1000000 --> No of line to be genrated 
+			3- /teragen_output --> HDFS folder where the data will be genrated 
+Ex. hadoop jar hadoop-mapreduce-examples-2.0.2.jar teragen 1000000 /teragen_output
+
+
+
+
+Types of data and import export  technice use 
+Sqoop --> import export of structure data 
+Flume -> import export of semi structure data large data 
+Using hadoop copy cammand -- > import export of file copy into cluster 
+
+
+Types of data and analysis technice use 
+Unstructure data --> mapreduce 
+	http://in.mathworks.com/discovery/matlab-mapreduce-hadoop.html?requestedDomain=www.mathworks.com   [matlab is for image process]
+	http://hipi.cs.virginia.edu/    [matlab is for image process]
+
+SemiStructure data - Pig, mapreduce
+Structure Data - Hive , pig , mapreduce
+	
+
+Hadoop Copy cammands:- 
+	Put :- Copy files from local file system to destination file system. It can also read from "stdin" and writes to destination file system
+		ex. hadoop dfs -put weather.txt hdfs://<target Namenode>
+	copyFromLocal	:- Similary to put command , except that source is restricted to local file referance 
+		ex. hadoop dfs -copyFromLocal weather.txt hdfs://<target Namenode>. 
+	 distcp :-Distributed copy to move data between clusters, used for back-up and recovery 
+		ex. hadoop dfs -distcp weather.txt hdfs://<target Namenode>. 
+
+ 
+ 
+ There are 2 splits in Mapreduces
+	1. Block split--> happens when file is stored into the cluster 
+	2. Input split--> is typically done when the file is analysis.
+	
+
+Consider There are 12 nodes And answered the question :-
+1		2-		3-		4		5		6		7		8		9		10		11		12
+120		72		72								129		72	
+
+	1. Client communicate with Resource Manager , Who will in return talk to Name node to get the block location
+	2. Application Manager in Resource Manager will start the AppMaster for the application [job] on a node where data is not present 
+	3. AppMaster will start the Container on the node where data is present [7, 8]
+	4. The reduce can be executed in any container on any node, not spcific to node where the Mapper task was perform 
+	
+	
+	
+How mapreduce works :-
+		
+		A input is one block 
+		
+		It is reacordReader Class which convert a record into a key value pair
+		
+		In the splitting phase, The key is going to be the offset point / cursor location in the file and value will be the whole record 
+		
+	Ex. 	0, Deer Bear REver
+			16, Car CAr River
+			30, Dear Car Bear
+			
+		Output of mapper is store in the local file system.
+		
+		Shuffling will ensure that it will bring all the values of similar keys from all the different nodes where the mappers are executed.
+Mapper Reduce with playing cards :- https://www.youtube.com/watch?v=bcjSe0xCHbE
+
+
+
+		
+How to Run Hadoop jar 
+
+			hadoop jar NAMEOFJAR.jar PackageName.ClassName parametersOfJobs
+		ex. hadoop jar WordCount.jar in.edureka.Wordcount /words / WCCountMar
+		
+	To get the Namenode status :- goto browser type http://locahost:portnumber/dfshealth.jsp
+	
+	
+Input split is happaned in processing 
+Block split is happaned when store it 
+	
+	
+	
+NOTE:- 
+Having mutiple reducers means getting mutiple output file as output 
+Conbiners:- is "min-reducers " in Map Phase. Basically it reduces the load of Reducers. 
+	ex. We have lots of similar keys in map If done used Conbiners each one is separatly stored in map. So it HElps in aggregate the similar keys
+Partitioners :- Shuffler will use partitioner to brings together all the values of similar keys
+
+
+
+Joins 
+
+	Map Side Join :- If we have big table and want to join with other table then we go for Map side join 
+	
+Where the output of mapper is store ?
+	In temperary space of node. 
+	And Final output of mapreduce is stored in HDFS
+	
+	
+Note:- 
+the Purpose of inputformat is to specify the record delimiter.
+
+
+Implementing a Custom inputformat :- 
+	Hadoop enable us to implement and specify custom inputformat implements for our mapreduce computation. We can implements custom inputformat implementation to gain more control over the input data as well as to support proprietary or application-specific input data file 
+		formats as input to hadoop Mapreduce computation.
+		
+	A inputformat implement should extends the org.acpache.hadoop.mapreduce.InputFormat <K, V> abstract class overriding the createRecordReader() and getSplits() methods
+Whereas CreateRecordReader() convert into keys and values formats
+
+	Steps to conver the Custom inputformat:-
+		1. Create a Custom Key Class
+		2. Create a Custom value Class
+		3. Create a inputformat Class
+		4. Create a RecordReader Class
+		5. Use the above in mapper code 
+		6. Write your driver code 
+		
+Mapreduce Video analysis :- on youtube  and https://blog.pivotal.io/data-science-pivotal/products/using-hadoop-mapreduce-for-distributed-video-transcoding
+
+MRUnit :- https://cwiki.apache.org/confluence/display/MRUNIT/MRUnit+Tutorial
+
+Counter :- counter are globle and there values are shared with Map Reduce and across the task \.
+
+Distributed Cache :- 
+by using jobConf caches file is copyed in the same node before executing the any job.
+	Setting up caches for application (add a referance data in HDFS first)
+		1. $bin/hadoop fs -copyFromLocal lookup.dat /myapp/lookup.dat
+	Setup the application's JobConf (using DistributedCache add referance data to job)
+		2. JobConf job = new JobConf();
+		DistributedCache.addCacheFile(new URL ("/myapp/lookup.dat"),job)
+		3. in the mapper or reducer code, us the referance data via DistributedCache.
+		
+		
+		
+Sequence file :  is file consist of binary key/values pair
+		Benefit of sequence file 
+		1. To enable binary data as input formats
+		2. To conpress small small files into one big file 
+		
+Note :- 1 file of 200 MB with 3 replication , how many pointers we need in the NN ? - > 6 pointers
+Now if we have 200 files of 1 MB . how many pointers we need in NN ? -> 600 pointers
+		
+		
+		
+
+
+		
+		
+HIVE :-
+
+	Advantages of HIVE :- 
+		1. Tables can be partitioned and Bucketed  
+		2. Schema Flexibility Evolutions 
+		3. Easy to plug-in custom Mapper /reduce code 
+		4. JDBC/ ODBC drivers are avaliable 
+		5. HIVE tables can be define directly on HDFS 
+		6. Extensible Types, Format, Function, Script
+		
+	Appache Thrift - server used by HIVE --> https://thrift.apache.org/
+	
+	
+Connect to hive :-
+	login to ur eduraka with cridentials --  edureka /edureka and check for services ---- sudo jsp  (NN is running)
+	login with putty  and type hive . session is initialized and it shows the path of hive installated 
+	in VM Eduraka --- Home directory > File system > usr > lib > Hive > Conf > default template (hive-defualt.xml)
+	Open hive-defualt.xml and search for "hive.start.dbconnectionString"  
+				https://archanaschangale.wordpress.com/2013/09/05/changing-default-metastore-derby-of-hive-to-mysql/ -- good blog
+	
+	Goto Putty > show databases ; ---> /// shows all the databases 
+	MAPPING between hive and HDFS --> 
+			
+				Hive											HDFS
+				Database								folder --> /user/hive/warehouse/name.db 
+				Table 									folder within the database folder
+				Rows									files within the Table folder 
+		Note---> if you want to see the databases , then in VM goto browser > namenode(http://locahost:500070) > hive 
+				
+http://www.edureka.co/blog/hive-commands/
+					
+					
+				To create a new database please follow the "practise.txt" file 
+				to see the present working driectory means which table u are  use command -- > set hive.cli.print.current.db=true
+				To check teh details of table --> desc formatted tablename ;
+				upload the data (txnsf.txt) to HDFS (link for huge data --> https://www.copy.com/s/t%3AUp4t3v3i94dM%3Bp%3A%252Ftxns%3Boid%3A388   or https://copy.com/Up4t3v3i94dM)
+								HIVE is having two tables 
+										internal table 
+										External table 
+								Internal table :- table is in linux not in HDFS 
+				Right now data is in internal table not on HDFS . to confirm this go to the Local m/c check for the same table you could find the same file/ table in your directory. 
+				
+		
+				
+	
+Zookeeper :-
+
+		
+		
+		Whatr is difference between flume and snoope
+		
+
+Flume :-
+		Flume import and export data with following components :-
+			1. Source --> data will coming from (Twitter)
+			2. Channel --> Link between twitter and HDFS
+			3. Sink --> data will be stored  (HDFS)
+	
+	Different phases of hadoop installation :- 
+		1. Explore :- We will focus only on hadoop parallel processiing capabilies. The data will be moved to your data lake and processing will be done there 
+		and we will not touch the BI and Reporting layer. --> 9-12 mmonths . The processed result will be moved from HDFS to DWH or your database from where it is picked by BI and Reporting Layer. 
+		
+		2. Refine :- Have the BI and Reporting layer also talk to the Data Lake via JDBC / ODBC layer .--> 12 - 18 months of implementation 
+				
+		3. Enrich :- Hadoop analysis will be shared in real time nature. HBase and other low latency tools.
+		
+		https://www.youtube.com/watch?v=t2U6138sp70 --> OOize 	
+		http://hadooped.blogspot.in/2013/06/apache-oozie-part-1-workflow-with-hdfs.html  
+	
+			
+
+
+			
+				
+
+		
+		PIG:
+Login to edureka and type -> Pig 
+
+Appache DataFu :- collection of library for working with large-scale data in hadoop and Pig 
+
+Benefit of Pig:
+	1. Less code hence less development time 
+	2. Need No Java
+	3. Execute it from client side and Job is executed on Cluster(dont need to install anything on Cluster side).[Hadoop need not to be present on client side]. The location of NN is mentioned in the Pig.properties file 
+	
+	
+	
+Note :- Good Books --> MapReduce Design Patterns , Map Reduce Cookbook for Java poeple 
+						Programing pig , Pig Design Pattterns-- for Pig 
+						Programing HIVE 
+						HBase Programing
+						Appceh Zookeper 
+						
+						
+Connect Eduraka with Putty:-. 
+	1. get the IP by ifconfig 
+	2. OPen putty  and passed IP [192.168.235.131]
+	3. log in with your Credentials 
+	4. Start the hadoop services .Cammonds ------>    sudo service hadoop-master stop
+							sudo service hadoop-master start
+							hadoop dfsadmin -safemode leave 
+							
+							If you want to run in Pig in Local mode command is 	--> pig -x local 
+							If you want to run in MapReduce or HDFS mode command --> pig
+	5. command to check the services runing on server :- sudo jps
+	6. hdfs dfs -ls / -- > to get into hadoop diractory 
+	7. pig 
+	8. log =LOAD '/sample.log'; --> loading teh sample.log file into hdfs
+	9. LEVELS = foreach log generate REGEX EXTRACT ($0,'(TRACE|DEBUG|INFO|WARN|ERROR|FATAL)',1) as LOGLEVEL;
+	10. FILTEREDLEVELS =FILTER LEVELS by LOGLEVEL is not null;  -->// there are some null value present and just to filter out such null value 
+	11. GROUPEDLEVELS =GROUP FILTEREDLEVELS by LOGLEVEL; --// make a group at logloevel 
+	12. FREQUENCIES = foreach GROUPEDLEVELS generate group as LOGLEVEL, COUNT(FILTEREDLEVELS.LOGLEVEL) as COUNT;
+// For each group, Count the occurrences of log levels, These is the frequences of each word in group.
+	13. dump FREQUENCIES; -->//Dump the FREQUENCiES alias to see the count of teh occurrences of each word in a group.
+	14. RESULT = order FREQUESCIES by COUNT desc;  -->  // Assign output in assending order
+	15. STORE RESULT into '/pigresults' -->// store the resuylt in pigout
+
+	
+
+Naming Convetion :-
+		Atom :- Single filed 
+		Tuple:- ()Single record with mutiple filed
+		Bag :- {}  Collection of Tuples
+		Map :- Key value pair
+		
+		
+		
+						
+
+
+
+
+HBase :  
+
+Restruction of Hadoop :=\
+
+ 1. Only batch processiing and not a real time
+ 2. allows only apend [WORM] and no update capability
+ 3. always analysis the file and no random read / write of records possible
+ 
+ introduction of nosql by Martin Flower in youtube.com
+
+ 
+ Need of the following capabilities 
+		1. Table with 10 coloum and want to select coloum 1 and 9 only. In RDMS how many coloum selected internally ? - Answer - 10. Whereas I need to select only 2 coloum
+		2. Can i compress some of teh coloum ?
+		3. Can I caches some of teh coloum 
+		4. Can I add a coloum when I am adding a row ?
+		5. Limited dependancy on structure of table.
+						-- If we need able capabilies the solution in NOSQL
+						
+http://www.edureka.co/blog/basics-of-hbase/
+http://www.edureka.co/blog/introduction-to-nosql-database/
+http://www.edureka.co/blog/overview-of-hbase-storage-architecture/
+https://learnhbase.wordpress.com/2013/03/02/hbase-shell-commands/
+https://wiki.apache.org/hadoop/Hbase/Shell
+
+
+		In which format hbase take data ?
+			key,value pair
+		What format of key and value type ?
+			It is of byte array
+		data is taking in coloum format . So it belong to coloum family 
+
+						
+		HDFS 				Hbase 
+NN is talking to 		
+		== Client 		Zookeeper is talking to Client
+		==slaves		HMaster -will be Active or Passive 
+		
+		DataNode 		RegionServer
+		Block			Regions
+		
+		
+Sharding :- means distributing data across mutiple nodes
+
+Let say there is table of 1000 rows. So it will be distrubited in all Nodes. And HMaster is taking care of distribution 
+
+	1				2 				3 					4					5
+	1-199			200-399			400-599				600-799				800-1000
+	
+		
+To Initializaed the Hbase :--- > hbase shell
+To check how many table are present in Hbase ----> List
+
+If hbase server is not running then gives a Zookeeper conection error 
+
+To work with hbase "Hmaster" service should be started 
+Steps to start Hbase server :- 
+		1. cd /usr/lib/hbase-0.96.-hadoop/bin
+		2. ./start-hbase.sh 
+		3. 
+
+			Droip table in Hbase :
+				disable 'emptable'
+				drop 'emptable'
+		
+			Creating table in hbase:-
+			create 'sample', 'professional', 'personal' --> sample -table name , professional/ personal --coloum .
+			
+			Insert data into table :- 
+			put 'tablename ','ROW', 'coloum :data' 
+			ex :-	put 'sample','vajay ','personal:Number','9665040076'
+			
+			retreive data :-
+			get 'sample','vijay'
+			
+			get 'sample', 'vijay', {versions => 5}
+			
+			get 'sample', 'vijay', {columns => 'professional:loc', versions => 3}
+			
+			
+			
+	Data can is sorted in three levels	
+		1. Coloum family levels
+		2. row family 
+		3. Value
+	
+	
+Book for referance :-    VM > /usr/lib/hbase-0/docs/books
+						Cloudera rest -- to understand how to use rest with hbase
+						
+						
+	
+	
+
+	
+
+
+		
+
+		
+		
+
+	
+	
+	
+	
+
+	
+	
+
+				
+			
+
+
+			
+			
+			
+
+			
+			
+			

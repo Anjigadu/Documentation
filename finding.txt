@@ -1,0 +1,516 @@
+
+--------------------------
+
+
+
+Interviewed questioned :-
+how to overwirte a exiting file in hdfs ?
+If data is given in format id , name , sal ,id name sal, id name sal then how to arrenge in id name sal table in hive 
+
+Jenkins :- Mastr -salve configuration , Git hub configuration , how to mange if build is broken 
+SOUPUI :- what are the other things passed in header and body, how java is used on groovy , how to collect any responce in variable and 	pass 	it in script directly , 
+
+hdfs doent not allow to over file. so frist rename or removed orgnal file and then upload new one 
+public class OverwriteTextOutputFormat<K, V> extends TextOutputFormat<K, V>
+{
+      public RecordWriter<K, V> 
+      getRecordWriter(TaskAttemptContext job) throws IOException, InterruptedException 
+      {
+          Configuration conf = job.getConfiguration();
+          boolean isCompressed = getCompressOutput(job);
+          String keyValueSeparator= conf.get("mapred.textoutputformat.separator","\t");
+          CompressionCodec codec = null;
+          String extension = "";
+          if (isCompressed) 
+          {
+              Class<? extends CompressionCodec> codecClass = 
+                      getOutputCompressorClass(job, GzipCodec.class);
+              codec = (CompressionCodec) ReflectionUtils.newInstance(codecClass, conf);
+              extension = codec.getDefaultExtension();
+          }
+          Path file = getDefaultWorkFile(job, extension);
+          FileSystem fs = file.getFileSystem(conf);
+          FSDataOutputStream fileOut = fs.create(file, true);
+          if (!isCompressed) 
+          {
+              return new LineRecordWriter<K, V>(fileOut, keyValueSeparator);
+          } 
+          else 
+          {
+              return new LineRecordWriter<K, V>(new DataOutputStream(codec.createOutputStream(fileOut)),keyValueSeparator);
+          }
+      }
+}
+
+
+----------------------------------
+
+1.     On our development site, Cashkaro.iamsavings.co.uk, we need to automate the testing of the Join Page. 2 cases here
+			a.     User can join normally
+			b.    Or, Join via Facebook.
+2.     Once User is joined, we need to test Sign-in via automation
+3.     Also create script to test Forgot Password automation
+
+
+1. Sqoop comand for Incremental Approch
+		
+			--incremental <mode>
+			--check-column <column name>
+			--last value <last check column value>
+			
+			
+			$ sqoop import \
+				--connect jdbc:mysql://localhost/userdb \
+				--username root \
+				--table emp \
+				--m 1 \
+				--incremental append \
+				--check-column id \
+				-last value 1205
+
+2. Sqoop log and make changes in 
+			sqoop in the background uses MapReduce to do its import/codeGeneration/export job. So its logs are stored in hadoop directory.
+			Location:
+			[yourHadoopLocation]/hadoop/@LOGDIR@/sqoop.log
+
+	change log directories is at installation where each of the different components will expose their log directory prefix. This is where you can choose an alternate log directory prefix for which all component-specific logs will be created under.log-dir-prefix.png
+	
+		If you miss , First, you will need to stop the service. You can then use the configs.sh script to easily modify it.
+	configs.sh is located in /var/lib/ambari-server/resources/scripts on your ambari server
+	If you would like to change the zookeeper log dir.
+
+				./configs.sh set localhost <clustername> zookeeper-env zk_log_dir “/my/new/zookeeper/log/directory”
+
+3. conversion of external table into internal 
+4. Metastore- how many defult mapper is used by matastore 
+5. how to chnage a metastore mapper count 
+6. location of internal table 
+7. Verision of cloudera , 
+8. 
+
+
+
+
+			
+Can you load 3TB of data in Apache Hive?
+Microsoft Hadoop Developer Interview Questions
+
+Explain the working of Hadoop architecture with various components.			
+How sqoop work internally ? 
+Differentiate between Bucketing and Partitioning and when will you use each of these.
+How many joins does MapReduce have and when will you use each type of join?
+What are sinks and sources in Apache Flume when working with Twitter data?
+How many JVMs run on a DataNode and what is their use?
+What is the advantage of having a Distributed Cache in Hadoop?
+5. What are the compression techniques and how do you decide which one to use
+13. Explain about SMB join in Hive
+What is speculative execution in Hadoop?
+How big data problems are solved in retail sector?
+What is the largest amount of data that you have handled?
+7. How to include partitioned column in data - Hive
+Hadoop Developer Interview Questions asked at other Top Tech Companies like Cognizant, CTS, Wipro
+What Hadoop components will you use to design a Craiglist based architecture?
+Why cannot you use Java primitive data types in Hadoop MapReduce?
+Can HDFS blocks be broken?
+Does Hadoop replace data warehousing systems?		
+Intuit Hadoop Developer Interview Questions
+
+
+Find the occurrence of every word (the number of pages on which the word is coming) in a huge file or book using Hadoop MapReduce.
+Accenture Hadoop Developer Interview Questions
+
+
+Expedia Hadoop Developer Interview Questions
+
+Every day a new log file is created that contains User ID details. Given a range of n days, how will you find the top 5 users?
+Google Hadoop Developer Interview Questions
+
+There is a table employee (employee_id int, employee_name varchar, employee_salary decimal, employee_manager_id int). We want to get the details of those employees that have salary more than their manager or do not have a manager at all. Implement the mapper and reducer functions to achieve this using Hadoop.
+
+Can you design a counter across all the Google servers using Hadoop stack?
+
+Twitter Hadoop Interview Questions
+
+Suggest an algorithm to design Twitter trends.
+ Will you use Apache Pig or Hadoop MapReduce for ad-hoc and scheduled jobs?
+Facebook Hadoop Interview Questions
+
+
+	
+Facebook decides to award the user with an Audi who submits the billionth search query on a particular day by displaying a banner on their search results page. Considering the scale of Facebook, how will you implement it?
+
+How does Facebook store user’s status updates and likes?
+All Facebook messages sent from desktop and Mobile are persisted on which database?
+TCS Hadoop Developer Interview Questions
+
+What is the difference between data and big data?
+	
+Propose a design to develop a system that can handle ingestion of both periodic data and real-time data.
+A folder contains 10000 files with each file having size greater than 3GB.The files contain users, their names and date. How will you get the count of all the unique users from 10000 files using Hadoop?
+File could be replicated to 0 Nodes, instead of 1. Have you ever come across this message? What does it mean?
+
+
+We have been able to collate these Hadoop developer interview questions together but we would love to get your input. What questions were you asked in your Hadoop developer interview? Please do comment below with the questions to help the Hadoop community at large.
+
+
+
+Why do you need HBase when you can use Hive to query Hadoop?
+
+
+
+
+
+***********************************************************
+Given an array if integers that is circularly stored, how do you find a given integer with complexity not greater than O(log n).?
+		Example: Search for 13 in {5,9,13,1,3}.
+				Input arr[] = {3, 4, 5, 1, 2}
+						Element to Search = 1
+						  1) Find out pivot point and divide the array in two
+							  sub-arrays. (pivot = 2) /*Index of 5*/
+						  2) Now call binary search for one of the two sub-arrays.
+							  (a) If element is greater than 0th element then
+									 search in left array
+							  (b) Else Search in right array
+								  (1 will go in else as 1 < 0th element(3))
+						  3) If element is found in selected sub-array then return index
+							 Else return -1.
+							 
+
+§  Implement 3 stacks in a single array.
+			1) Define two stacks beginning at the array endpoints and growing in opposite directions.
+
+			2) Define the third stack as starting in the middle and growing in any direction you want.
+
+			3) Redefine the Push op, so that when the operation is going to overwrite other stack, you shift the whole middle stack in the opposite direction before Pushing.
+
+			You need to store the stack top for the first two stacks, and the beginning and end of the third stack in some structure.
+
+			Edit
+
+			alt text
+
+			Above you may see an example. The shifting is done with an equal space partitioning policy, although other strategies could be chosen depending upon your problem heuristics.
+
+			Edit
+
+			Following @ruslik's suggestion, the middle stack could be implemented using an alternating sequence for subsequent pushes. The resulting stack structure will be something like:
+
+			| Elem 6 | Elem 4 | Elem 2 | Elem 0 | Elem 1 | Elem 3 | Elem 5 |
+
+
+			
+§  How would you design a search engine?
+			a web crawler (spider) which collects the content of web pages parsing the HTML and following links
+			a full text search engine to store and index the data
+			a web interface for querying the full text index
+
+
+§  How would you determine a winner in a game of tic-tac-toe?
+			public class TicTacToe
+			{
+				char[][] ticTacToe = 
+				{{'X',' ','O'},
+				 {'O','X','O'},
+				 {'X',' ','X'},};
+
+				private Character winner = null;
+
+				public Character getWinner()
+				{
+					return this.winner;
+				}
+
+				public boolean isSolved()
+				{
+					this.checkSolved();
+					return this.winner != null;
+				}
+
+				private void checkSolved()
+				{
+					for(int i = 0; i < ticTacToe.length; i++)
+					{
+						Character win = checkRow(i);
+						if(win != null || (win = checkColumn(i)) != null)
+						{
+							this.winner = win;
+							return;
+						}
+					}
+					//Check diagonal top left to bottom right
+					if(this.ticTacToe[0][0] != ' ')
+					{
+						if(this.ticTacToe[0][0] == this.ticTacToe[1][1] &&
+						   this.ticTacToe[1][1] == this.ticTacToe[2][2])
+						{
+							this.winner = this.ticTacToe[0][0];
+						}
+					}
+					//Check diagonal top right to bottom left
+					else if(this.ticTacToe[0][2] != ' ')
+					{
+						if(this.ticTacToe[0][2] == this.ticTacToe[1][1] &&
+						   this.ticTacToe[1][1] == this.ticTacToe[2][0])
+						{
+							this.winner = this.ticTacToe[0][2];
+						}
+					}
+				}
+
+				private Character checkRow(int row)
+				{
+					if(this.ticTacToe[row][0] == ' ')
+					{
+						return null;
+					}
+					if(this.ticTacToe[row][0] == this.ticTacToe[row][1] &&
+					   this.ticTacToe[row][1] == this.ticTacToe[row][2])
+					{
+						return this.ticTacToe[row][0];
+					}
+					return null;
+				}
+
+				private Character checkColumn(int column)
+				{
+					if(this.ticTacToe[0][column] == ' ')
+					{
+						return null;
+					}
+					if(this.ticTacToe[0][column] == this.ticTacToe[1][column] &&
+					   this.ticTacToe[1][column] == this.ticTacToe[2][column])
+					{
+						return this.ticTacToe[column][0];
+					}
+					return null;
+				}
+
+				public static void main(String[] args)
+				{
+					TicTacToe ttt = new TicTacToe();
+					if(ttt.isSolved())
+					{
+						System.out.println(ttt.getWinner());  // X
+					}
+				}
+			}
+
+
+			
+§  How would you determine a winner in a game of tic-tac-toe given that the game board can be of any size?
+§  Write an algorithm to find depth of a binary search tree.
+§  Write an algorithm to find depth of a binary search tree without using recursion.
+§  Given an array of integers, replace each number in the array with the product of all of the integers except for the one being replaced.
+§  How would you create a caching system to return the N most recently accessed items.
+§  Given that you have two files, each with a list of word sin them, write a program that determines intersection.
+§  Tell us about a few codes that you have written.
+§  Can you convert ASCII string to integer? How would you do it? Explain with the help of an example.
+§  How would you explain what is adhoc testing?
+§  Can you write a function to find out if a given number is a power of 5?
+§  Here is a UI of one of our applications. Can you test it out?
+§  How would you search an element from array?
+§  Tell us about your experience in writing test plans.
+§  Explain the concept of regression testing.
+§  What is an InStr function? Can you write test cases for InStr?
+§  What do you think is the difference between the responsibilities of SDE and SDET?
+§  Without using loops, can you write a function that prints the number from 1 to 50 in a serial order?
+§  Can you tell us the difference between Java and C#?
+§  Differentiate between severity and priority.
+§  How would you compile a bug report? What would it consist?
+§  What is Beta testing and Specifications testing? What is the difference between them?
+§  Name and explain the different categories that test cases are generally grouped by.
+§  Can you reverse a string? Give us an example.
+ 
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------
+
+Sikuli
+http://roadtoautomation.blogspot.in/2013/01/sikuli-with-test-ng-framework.html
+http://www.paulfrymire.com/2011/08/30/sikuli-script-in-java-part-1-configuration-and-hello-world/comment-page-1/
+http://www.8bitavenue.com/2012/03/gui-testing-using-sikuli-and-java/
+http://grokbase.com/t/gg/webdriver/131xqrqvk4/not-able-to-integrate-sikuli-with-webdriver.
+http://www.java2s.com/Code/Jar/s/Downloadsikuliwebdriver101jar.htm
+
+https://www.google.co.in/search?q=sikuli+&oq=sikuli+&aqs=chrome..69i57j69i60j69i59j69i60l3.6409j0j8&sourceid=chrome&espv=210&es_sm=93&ie=UTF-8#q=install+sikuli+in+eclipse
+
+
+HIVE Resume 
+-----------
+• Data and pattern Analysis using Hadoop Map-Reduce on user profiles and
+Bidding Data
+And also did lifespan, user search keyword analysis etc.
+Developing Hive queries to generate reports.
+Developing and Enhancing GUI for the team to track processing requests.
+• Involved in developing the Hive Reports.
+
+Project Description:--> Maintaining the customer member details and rewards points transaction 
+are very difficult in terms of storage and processing. Member loyalty management system is
+replacing the existing reward management system which is developed as a web service provider 
+with the help of database sharing. Aim of this system is to reduce the response time of web 
+service. This system is designed with HBase storage handler and later planning to remove some 
+BI reports generation using Hive. The solution is based on the open source Big Data s/w Hadoop. 
+The data will be stored in Hadoop file system and processed using Map/Reduce jobs.
+
+
+----------
+
+
+ 
+ I trained and mentored leading entrepreneurs as well as working professionals in the following areas;
+- Digital Marketing Strategy
+- Social Media Optimization
+
+
+
+? Strong practical knowledge and experience of automation; Cucumber-JVM,  Selenium (GRID, IDE, RC, Webdriver), soapUI 
+? Strong practical knowledge and experience in automation framework tools; Junit, TestNG 
+? Strong practical knowledge and experience in programming;  JAVA, PL/SQL,Groovy 
+? Practical knowledge and experience of continuous integration;Jenkins 
+? Practical knowledge and experience of distributed version control systems; GIT, Perforce  
+? Practical knowledge and experience of QA in Continuous Delivery/Deployment :ANT, Maven
+? Practical knowledge and experience of methodologies; Agile (BDD, ATDD, FDD ,TDD), V-Model, Waterfall 
+? Practical knowledge and experience of testing techniques; Boundary Value Analysis, Equivalence Partitioning, State Transition, Use Case 
+? Practical knowledge and experience of defect management; Bugzilla, BugRepoter, PS 
+ Knowledge of at least one continuous integration builds tool - Jenkins, ANT, Maven, Hudson.
+
+ 
+
+User Agent values
+Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1700.107 Safari/537.36
+
+
+
+
+
+
+REST API
+toddf@ecollege.com
+http://kevingann.blogspot.in/2013/08/using-apache-httpclient-to-authenticate.html
+http://selenium2advanced.blogspot.in/2012/07/integrate-httpclient-into-webdriver.html
+http://www.softwareishard.com/blog/firebug/automate-page-load-performance-testing-with-firebug-and-selenium/
+http://www.seleniumtests.com/2012/10/capture-network-traffic-using-webdriver.html
+http://khachko.blogspot.in/2013/06/using-post-request-together-with.html
+http://grepcode.com/file/repo1.maven.org/maven2/org.seleniumhq.selenium/selenium-remote-driver/2.10.0/org/openqa/selenium/remote/internal/HttpClientFactory.java
+http://falkenfighter.wordpress.com/category/selenium/webdriver/
+https://code.google.com/p/goldium/
+
+
+
+
+
+
+
+
+
+
+
+Request:
+Accept	text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Encoding	gzip, deflate
+Accept-Language	en-US,en;q=0.5
+Connection	keep-alive
+Cookie	surehits_src=295727; surehits_var1=aol_traffic; inject_params=WT.qs_dlk=UrQU7wrIZ18AADLUQ3sAAAAF&; WMUUID=UrQU7wrIZ18AADLUQ3sAAAAF; WT_FPC=id=182.72.46.222-3358527616.30342329:lv=1388431046787:ss=1388431046787; __utma=51786800.1093619999.1387533588.1388398463.1388479646.8; __utmc=51786800; __utmz=51786800.1388398463.7.4.utmcsr=hqbugs.com|utmccn=(referral)|utmcmd=referral|utmcct=/show_bug.cgi; __CT_Data=gpv=26&apv_41596_www=26; WRUID=0; __qca=P0-1936256180-1387783584053; PHPSESSID=um92osgc7q6hkemitc787nqfb6
+Host	secure.hsh.com
+User-Agent	Mozilla/5.0 (Windows NT 6.1; WOW64; rv:24.0) Gecko/20100101 Firefox/24.0
+------------------------------------
+REsponce
+Cache-Control	no-store, no-cache, must-revalidate, post-check=0, pre-check=0, public, public
+Connection	Keep-Alive
+Content-Encoding	gzip
+Content-Type	text/html; charset=utf-8
+Date	Tue, 31 Dec 2013 09:55:07 GMT
+Expires	Thu, 19 Nov 1981 08:52:00 GMT
+Keep-Alive	timeout=5
+P3P	policyref="/w3c/p3p.xml", CP="NOI DSP COR CURa ADMa DEVa PSDa OUR BUS UNI COM NAV OTC"
+Pragma	no-cache
+Server	Apache
+Set-Cookie	tracking_params=src%3D295727%26src_hf%3D569431%26CCID%3D20235023204375959%26QTR%3DZZf201301062231170Za20235023Zg78Zw20Zm0Zc204375959Zs8400ZZ%26CLK%3D106131231014150991
+Transfer-Encoding	chunked
+Vary	Accept-Encoding
+X-Powered-By	PHP/5.1.6
+--------------------------------
+Key : Date ,Value : Tue, 31 Dec 2013 09:52:14 GMT
+Key : Server ,Value : Apache
+Key : Set-Cookie ,Value : PHPSESSID=r9ob18tmbskcvjlot67j67b6g3; path=/
+Key : Expires ,Value : Thu, 19 Nov 1981 08:52:00 GMT
+Key : Cache-Control ,Value : no-store, no-cache, must-revalidate, post-check=0, pre-check=0
+Key : Pragma ,Value : no-cache
+Key : Vary ,Value : User-Agent,Accept-Encoding
+Key : Cache-Control ,Value : public
+Key : Cache-Control ,Value : public
+Key : P3P ,Value : policyref="/w3c/p3p.xml", CP="NOI DSP COR CURa ADMa DEVa PSDa OUR BUS UNI COM NAV OTC"
+Key : Connection ,Value : close
+Key : Transfer-Encoding ,Value : chunked
+Key : Content-Type ,Value : text/html; charset=UTF-8
+Tue, 31 Dec 2013 09:52:14 GMT
+
+------------------------------------------------------
+
+Key : null ,Value : [HTTP/1.1 200 OK]
+Key : Expires ,Value : [Thu, 19 Nov 1981 08:52:00 GMT]
+Key : Set-Cookie ,Value : [tracking_params=src%3D569430%26src_hf%3D569431%26CCID%3D20235023204375959%26QTR%3DZZf201301062231170Za20235023Zg78Zw20Zm0Zc204375959Zs8400ZZ%26CLK%3D106131231014150991, PHPSESSID=i92d7t2huvspjc6o46us0pdo56; path=/]
+Key : Connection ,Value : [Keep-Alive]
+Key : X-Powered-By ,Value : [PHP/5.1.6]
+Key : Server ,Value : [Apache]
+Key : Cache-Control ,Value : [public, public, no-store, no-cache, must-revalidate, post-check=0, pre-check=0]
+Key : Pragma ,Value : [no-cache]
+Key : Date ,Value : [Tue, 31 Dec 2013 09:48:07 GMT]
+Key : Transfer-Encoding ,Value : [chunked]
+Key : Vary ,Value : [Accept-Encoding]
+Key : P3P ,Value : [policyref="/w3c/p3p.xml", CP="NOI DSP COR CURa ADMa DEVa PSDa OUR BUS UNI COM NAV OTC"]
+Key : Keep-Alive ,Value : [timeout=5]
+Key : Content-Type ,Value : [text/html; charset=utf-8]
+
+
+---------------------------------------------------------------------
+Cache-Control	no-cache
+Content-Length	42
+Content-Type	image/gif
+Expires	Thu, 01 Jan 1970 00:00:00 GMT
+P3P	CP="NOI CURa ADMa DEVa TAIa OUR BUS IND UNI COM NAV INT"
+Server	Jetty(9.0.6.v20130930)
+Set-Cookie	a=c1185854076971770615;Path=/;Domain=.rfihub.com;Expires=Sat, 18-Jun-2016 09:55:11 GMT j=c1185854076971770615;Path=/;Domain=.rfihub.com s19=1388035974818;Path=/;Domain=.rfihub.com;Expires=Sat, 18-Jun-2016 09:55:11 GMT s3=1388397497046;Path=/;Domain=.rfihub.com;Expires=Sat, 18-Jun-2016 09:55:11 GMT s11=1388397497046;Path=/;Domain=.rfihub.com;Expires=Sat, 18-Jun-2016 09:55:11 GMT s15=1388036137064;Path=/;Domain=.rfihub.com;Expires=Sat, 18-Jun-2016 09:55:11 GMT s5=1388397926477;Path=/;Domain=.rfihub.com;Expires=Sat, 18-Jun-2016 09:55:11 GMT s17=1388399096873;Path=/;Domain=.rfihub.com;Expires=Sat, 18-Jun-2016 09:55:11 GMT s9=1388397497046;Path=/;Domain=.rfihub.com;Expires=Sat, 18-Jun-2016 09:55:11 GMT s16=1388041437523;Path=/;Domain=.rfihub.com;Expires=Sat, 18-Jun-2016 09:55:11 GMT s13=1388397915213;Path=/;Domain=.rfihub.com;Expires=Sat, 18-Jun-2016 09:55:11 GMT s1=1388397497046;Path=/;Domain=.rfihub.com;Expires=Sat, 18-Jun-2016 09:55:11 GMT ac=aAvGm1PbQ==AI20540265AAABQ0gUEyo=AI20540257AAABQ0f3bns=AI20540257AAABQ0f2uH4=AI20540257AAABQ0fWfcQ=AI20540257AAABQ0fWFKw=AI20540257AAABQ0PSVRk=AI20540257AAABQ0PSUPk=AI20540257AAABQ0OdMP0=AI20540257AAABQ0OcvMw=AI20540257AAABQ0OVYD0=AI20540257AAABQ0OUCY4=AI20540257AAABQ0OUApU=AI20540257AAABQ0MKRPI=AI20540257AAABQ0MJyeY=AI20540257AAABQ0MJx0c=AI20540257AAABQ0MJsSQ=AI20540257AAABQ0MI9Cg=AI20540257AAABQ0L_hO4=AI20540257AAABQ0L_d-s=AI20540257AAABQ0L_dIo=AI20540257AAABQ0L_W-A=AI20540257AAABQ0L_R3w=AI20540257AAABQ0L_Qwc=AI20540265AAABQ0L9xiM=AI20540265AAABQ0L9i7U=AI20540265AAABQ0L9PNo=AI20540265AAABQ0L3GEw=AI20540265AAABQ0L27Ew=AI20540263AAABQ0L1-hU=AI20540265AAABQ0L1nEM=AI20540265AAABQ0LwitY=AI20540257AAABQy4-9dI=AI20541699AAABQy3LlBI=AI20540257AAABQy3Ldmg=AI20541699AAABQy24AiE=AI20540257AAABQy237kc=AI20541699AAABQy23sKE=AI20540257AAABQy23kUM=AI20540257AAABQy23gVI=AI20541699AAABQy2vIFg=AI20540257AAABQy2u1yw=AI20540257AAABQy2s0_M=AI20540257AAABQy2sm6M=AI20541699AAABQy1tLqw=AI20541699AAABQy1nGR8=AI20541699AAABQy1moGg=AI20540257AAABQy1kJqE=;Path=/;Domain=.rfihub.com;Expires=Sat, 18-Jun-2016 09:55:11 GMT u=aABdztekQ==AI3i5Itg==AAABQ0gUEys=;Path=/;Domain=.rfihub.com;Expires=Sat, 18-Jun-2016 09:55:11 GMT f=aADVMAW0A==AK1388479648AB5AAABQ0gUEyo=AK1388397497AC26AAABQ0PSVRk=AK1388035974AC16AAABQy4-9dI=;Path=/;Domain=.rfihub.com;Expires=Sat, 18-Jun-2016 09:55:11 GMT e=cax;Path=/;Domain=.rfihub.com;Expires=Sat, 18-Jun-2016 09:55:11 GMT
+
+===============================================================================
+	no-cache
+Content-Length	42
+Content-Type	image/gif
+Expires	Thu, 01 Jan 1970 00:00:00 GMT
+P3P	CP="NOI CURa ADMa DEVa TAIa OUR BUS IND UNI COM NAV INT"
+Set-Cookie	a=c1185854076971770615;Path=/;Domain=.rfihub.com;Expires=Tue, 21-Jun-2016 12:25:34 GMT j=c1185854076971770615;Path=/;Domain=.rfihub.com s19=1388643436557;Path=/;Domain=.rfihub.com;Expires=Tue, 21-Jun-2016 12:25:34 GMT s3=1388745281992;Path=/;Domain=.rfihub.com;Expires=Tue, 21-Jun-2016 12:25:34 GMT s11=1388745281992;Path=/;Domain=.rfihub.com;Expires=Tue, 21-Jun-2016 12:25:34 GMT s15=1388036137064;Path=/;Domain=.rfihub.com;Expires=Tue, 21-Jun-2016 12:25:34 GMT s5=1388643436557;Path=/;Domain=.rfihub.com;Expires=Tue, 21-Jun-2016 12:25:34 GMT s17=1388661821118;Path=/;Domain=.rfihub.com;Expires=Tue, 21-Jun-2016 12:25:34 GMT s9=1388745281992;Path=/;Domain=.rfihub.com;Expires=Tue, 21-Jun-2016 12:25:34 GMT s16=1388652976522;Path=/;Domain=.rfihub.com;Expires=Tue, 21-Jun-2016 12:25:34 GMT s13=1388397915213;Path=/;Domain=.rfihub.com;Expires=Tue, 21-Jun-2016 12:25:34 GMT s1=1388745281992;Path=/;Domain=.rfihub.com;Expires=Tue, 21-Jun-2016 12:25:34 GMT ac=aBK-aLhgA==AI20540257AAABQ1gQ0ns=AI20541699AAABQ1erUcc=AI20540257AAABQ1LjR6Y=AI20540257AAABQ1K5bZ8=AI20540265AAABQ1K3_2M=AI20540257AAABQ1K3ws8=AI20540265AAABQ1Kxzr0=AI20540257AAABQ1KA52c=AI20540257AAABQ1KAocg=AI20540257AAABQ1KAiGQ=AI20540257AAABQ1KAcsI=AI20540257AAABQ1KAHc0=AI20540257AAABQ1JTcE0=AI20540257AAABQ1JTXJg=AI20540265AAABQ1JShAE=AI20540257AAABQ1I2oDI=AI20540265AAABQ1Iq2Yo=AI20540265AAABQ1HHnEM=AI20540265AAABQ1GZSA0=AI20540265AAABQ1Flm4U=AI20540265AAABQ1Fa_X8=AI20540265AAABQ0imWYk=AI20540265AAABQ0iTYnE=AI20540257AAABQ0iTSo8=AI20540257AAABQ0iTFtw=AI20540265AAABQ0gf9cg=AI20540265AAABQ0gdSnw=AI20540265AAABQ0gUEyo=AI20540257AAABQ0f3bns=AI20540257AAABQ0f2uH4=AI20540257AAABQ0fWfcQ=AI20540257AAABQ0fWFKw=AI20540257AAABQ0PSVRk=AI20540257AAABQ0PSUPk=AI20540257AAABQ0OdMP0=AI20540257AAABQ0OcvMw=AI20540257AAABQ0OVYD0=AI20540257AAABQ0OUCY4=AI20540257AAABQ0OUApU=AI20540257AAABQ0MKRPI=AI20540257AAABQ0MJyeY=AI20540257AAABQ0MJx0c=AI20540257AAABQ0MJsSQ=AI20540257AAABQ0MI9Cg=AI20540257AAABQ0L_hO4=AI20540257AAABQ0L_d-s=AI20540257AAABQ0L_dIo=AI20540257AAABQ0L_W-A=AI20540257AAABQ0L_R3w=AI20540257AAABQ0L_Qwc=AI20540265AAABQ0L9xiM=AI20540265AAABQ0L9i7U=AI20540265AAABQ0L9PNo=AI20540265AAABQ0L3GEw=AI20540265AAABQ0L27Ew=AI20540263AAABQ0L1-hU=AI20540265AAABQ0L1nEM=AI20540265AAABQ0LwitY=AI20540257AAABQy4-9dI=AI20541699AAABQy3LlBI=AI20540257AAABQy3Ldmg=AI20541699AAABQy24AiE=AI20540257AAABQy237kc=AI20541699AAABQy23sKE=AI20540257AAABQy23kUM=AI20540257AAABQy23gVI=AI20541699AAABQy2vIFg=AI20540257AAABQy2u1yw=AI20540257AAABQy2s0_M=AI20540257AAABQy2sm6M=AI20541699AAABQy1tLqw=AI20541699AAABQy1nGR8=AI20541699AAABQy1moGg=AI20540257AAABQy1kJqE=;Path=/;Domain=.rfihub.com;Expires=Tue, 21-Jun-2016 12:25:34 GMT u=aABq9-GuA==AI3i5Itg==AAABQ1gQ0ns=;Path=/;Domain=.rfihub.com;Expires=Tue, 21-Jun-2016 12:25:34 GMT f=aAFlGY7_g==AK1388745281AB2AAABQ1gQ0ns=AK1388639354AC19AAABQ1LjR6Y=AK1388479648AC11AAABQ0imWYk=AK1388397497AC26AAABQ0PSVRk=AK1388035974AC16AAABQy4-9dI=;Path=/;Domain=.rfihub.com;Expires=Tue, 21-Jun-2016 12:25:34 GMT e=cp;Path=/;Domain=.rfihub.com;Expires=Tue, 21-Jun-2016 12:25:34 GMT
+Request Headersview source
+Accept	image/png,image/*;q=0.8,*/*;q=0.5
+Accept-Encoding	gzip, deflate
+Accept-Language	en-US,en;q=0.5
+Connection	keep-alive
+Cookie	a=c1185854076971770615; s19=1388643436557; s3=1388745281992; s11=1388745281992; s9=1388745281992; b=aABLH7KMA==AE7737AAABQ1K5bZ8=; ac=aBJM3aS5A==AI20541699AAABQ1erUcc=AI20540257AAABQ1LjR6Y=AI20540257AAABQ1K5bZ8=AI20540265AAABQ1K3_2M=AI20540257AAABQ1K3ws8=AI20540265AAABQ1Kxzr0=AI20540257AAABQ1KA52c=AI20540257AAABQ1KAocg=AI20540257AAABQ1KAiGQ=AI20540257AAABQ1KAcsI=AI20540257AAABQ1KAHc0=AI20540257AAABQ1JTcE0=AI20540257AAABQ1JTXJg=AI20540265AAABQ1JShAE=AI20540257AAABQ1I2oDI=AI20540265AAABQ1Iq2Yo=AI20540265AAABQ1HHnEM=AI20540265AAABQ1GZSA0=AI20540265AAABQ1Flm4U=AI20540265AAABQ1Fa_X8=AI20540265AAABQ0imWYk=AI20540265AAABQ0iTYnE=AI20540257AAABQ0iTSo8=AI20540257AAABQ0iTFtw=AI20540265AAABQ0gf9cg=AI20540265AAABQ0gdSnw=AI20540265AAABQ0gUEyo=AI20540257AAABQ0f3bns=AI20540257AAABQ0f2uH4=AI20540257AAABQ0fWfcQ=AI20540257AAABQ0fWFKw=AI20540257AAABQ0PSVRk=AI20540257AAABQ0PSUPk=AI20540257AAABQ0OdMP0=AI20540257AAABQ0OcvMw=AI20540257AAABQ0OVYD0=AI20540257AAABQ0OUCY4=AI20540257AAABQ0OUApU=AI20540257AAABQ0MKRPI=AI20540257AAABQ0MJyeY=AI20540257AAABQ0MJx0c=AI20540257AAABQ0MJsSQ=AI20540257AAABQ0MI9Cg=AI20540257AAABQ0L_hO4=AI20540257AAABQ0L_d-s=AI20540257AAABQ0L_dIo=AI20540257AAABQ0L_W-A=AI20540257AAABQ0L_R3w=AI20540257AAABQ0L_Qwc=AI20540265AAABQ0L9xiM=AI20540265AAABQ0L9i7U=AI20540265AAABQ0L9PNo=AI20540265AAABQ0L3GEw=AI20540265AAABQ0L27Ew=AI20540263AAABQ0L1-hU=AI20540265AAABQ0L1nEM=AI20540265AAABQ0LwitY=AI20540257AAABQy4-9dI=AI20541699AAABQy3LlBI=AI20540257AAABQy3Ldmg=AI20541699AAABQy24AiE=AI20540257AAABQy237kc=AI20541699AAABQy23sKE=AI20540257AAABQy23kUM=AI20540257AAABQy23gVI=AI20541699AAABQy2vIFg=AI20540257AAABQy2u1yw=AI20540257AAABQy2s0_M=AI20540257AAABQy2sm6M=AI20541699AAABQy1tLqw=AI20541699AAABQy1nGR8=AI20541699AAABQy1moGg=AI20540257AAABQy1kJqE=; u=aABqlkl3Q==AI3i5Itg==AAABQ1erXvQ=; f=aAF2AAWYA==AK1388745281AB1AAABQ1erUcc=AK1388639354AC19AAABQ1LjR6Y=AK1388479648AC11AAABQ0imWYk=AK1388397497AC26AAABQ0PSVRk=AK1388035974AC16AAABQy4-9dI=; e=cax; r=1388035974817; o=1-PDy-aWGKUDPm; p=1-PDy-aWGKUDPm; a1=1CAESEMpBeB_oZxt6roShoRpl6Lw; t=1388745285363; s1=1388745281992; a2=0; t1=1388639361164; s15=1388036137064; s13=1388397915213; s5=1388643436557; a7=3UrvSInCeNjMBQM67Ig; t7=1388655639064; s17=1388661821118; s16=1388652976522; a5=E0; t4=1388658618634; j=c1185854076971770615; j1=1CAESEMpBeB_oZxt6roShoRpl6Lw; j2=0; j7=3UrvSInCeNjMBQM67Ig; j5=E0
+Host	20540257p.rfihub.com
+Referer	http://www.hsh.com/
+User-Agent	Mozilla/5.0 (Windows NT 6.1; WOW64; rv:24.0) Gecko/20100101 Firefox/24.0
+
+
+Key : Cache-Control ,Value : must-revalidate,no-cache,no-store
+Key : Content-Type ,Value : text/html; charset=ISO-8859-1
+Key : Content-Length ,Value : 278
+
+
+
+
+
+
+
+
+
+
+ 
+ 
+
+
+
+
+
+

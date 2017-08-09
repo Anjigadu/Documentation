@@ -1,0 +1,159 @@
+
+
+												HDFS Commands
+		Command: hadoop version
+
+Displays List of Files and Directories in HDFS file Path
+		Command: hadoop fs –ls /
+
+
+creates the directory in HDFS
+		Syntax: hdfs dfs –mkdir /directory_name
+		E.g: hdfs dfs –mkdir /new_edureka
+		
+
+Displays the summary of file lengths.
+		Syntax: hdfs dfs –du –s /path/to/file_in_hdfs
+		Command: hdfs dfs –du –s /new_edureka/test
+
+
+Create a file in HDFS with file size 0 bytes 
+		Syntax: hdfs dfs –touchz /directory/filename 
+		E.g: hdfs dfs –touchz /newedureka/sample.
+
+
+Use the du command to check the file size
+		Command: hdfs dfs –du –s /new_edureka/sample
+
+Copies source paths to stdout.
+		Syntax: hdfs dfs –cat /path/to/file_in_hdfs
+
+
+Takes a source file and outputs the file in text format.( Same as Cat command )
+		Syntax: hdfs dfs –text /path/to/file_in_hdfs
+		Command: hdfs dfs –text /new_edureka/test
+Note: Here test is a file that exists in HDFS in the directory new_edureka
+
+
+Retrive a top lines from file in HDFS
+		hdfs dfs -text /sachin/logger.log | head
+		
+		
+Copy the file from Local file system to HDFS.
+		Syntax: hdfs fs -copyFromLocal <localsrc> URI
+		E.g: hdfs dfs –copyFromLocal /home/edureka/Desktop/test /new_edureka
+
+		
+Copy the file from HDFS to Local File System. 
+		Syntax: hdfs dfs -copyToLocal URI <localdst>
+		Command: hdfs dfs –copyToLocal /new_edureka/test /home/edureka
+
+		
+Copy single source, or multiple srcs from local file system to the destination file system. 
+		Syntax: 	hdfs fs -put <localsrc> ... <dst>
+		Command: hdfs dfs –put /home/edureka/Desktop/test /user
+
+
+
+Copy files from hdfs to the local file system.
+		Syntax: hadoop fs -get [-ignorecrc] [-crc] <src> <localdst> 
+		E.g: hdfs dfs –get /user/test /home/edureka
+
+
+Count the number of directories, files and bytes under the paths that match the specified file pattern.
+		Command: hdfs dfs –count /user
+
+Remove the file from HDFS.
+		Syntax: hdfs dfs –rm /path/to/file_in_hdfs
+		Command: hdfs dfs –rm /new_edureka/test
+
+Difference between 2 file in hdfs
+	   diff <(hadoop fs -cat /path/to/file) <(hadoop fs -cat /path/to/file2)
+
+Remove the directory to HDFS
+		Syntax: hdfs dfs –rmr /path/to/directory_in_hdfs
+		Command: hdfs dfs –rmr /new_edureka/
+
+		Hot to submitt jiob>?
+		
+to see available free space in hdfs	
+		hadoop dfsadmin -report
+		
+Hive Command to shows all the details like path, location description ,serde ,partition , bucket, etc
+		describe formatted table_name
+--------------------------------------------------------------------------
+
+		Linux 
+		--------------
+		
+PID: Process Id
+PPID: Parent Process Id (the one which launched this PID)
+TGID: Thread Group Id
+
+Find :- 
+	The “find” command allows you to search for files for which you know the approximate filenames.	
+		find ./*.txt /// find the files with extension .txt
+
+		Finding the file whose size is more than 10mb
+	-->	find . -type f -size +100M
+	
+	
+Replace foo with bar only on the 4th line:
+			sed -i '4s/foo/bar/g' file
+
+
+		
+Locate Command:-
+	he locate command is faster than the find command because it uses a previously built database, whereas the find command searches in the real system, through all the actual directories and files. The locate command returns a list of all path names containing the specified group of characters.
+			ex.- locate mydata
+
+ Which Command :- useful in finding the location of an executable for creating a shortcut to the program on the desktop, on a panel,
+		ex which -a firefox
+
+		Whereis Command - used to find out where the binary, source, and man page files for a command are located.
+		 ex- whereis firefox
+		 
+	
+	How to copy files from one machine to another using ssh
+		ex, scp <source> <destination>
+		
+		
+		
+What are the different modes when using vi editor?
+
+There are 3 modes under vi:
+– Command mode – this is the mode where you start in
+– Edit mode – this is the mode that allows you to do text editing
+– Ex mode – this is the mode wherein you interact with vi with instructions to process a file
+
+
+grep a search command that makes use of pattern-based searching.
+
+What are the contents in /usr/local?  --> It contains locally installed files.
+
+How do you execute more than one command or program from a single command line entry?
+			ls –l cd .. ls –a MYWORK which is equivalent to 3 commands: ls -l cd.. ls -a MYWORK
+			
+		you can combine several commands by separating each command or program using a semicolon symbol. For example, you can issue such a series of commands in a single entry:
+
+Write a command that will look for files with an extension “c”, and has the occurrence of the string “apple” in it.
+	Find ./ -name “*.c” | xargs grep –i “apple”
+	
+Write a command that will display all .txt files, including its individual permission.
+			ls -a -l *.txt
+
+What is the command to calculate the size of a folder?  -- > du –sh folder1.
+How can you find status of a process? -- pS 
+
+How can you check the memory status ?  -- > FREE 
+
+How can you append one file to another in  Linux?
+
+To append one file to another in Linux you can use command cat file2 >> file 1.  The operator >> appends the output of the named file or creates the file if it is not created.  While another command cat file 1 file 2 > file 3 appends two or more files to one.
+
+
+
+		
+	
+ 
+	
